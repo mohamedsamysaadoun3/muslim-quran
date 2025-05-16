@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muslim Quran</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Muslim Quran">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+</head>
+<body class="light-theme">
+  <div class="container">
+    <header>
+      <h1>Muslim Quran</h1>
+      <div class="top-controls">
+        <button id="create-video-btn" class="main-button">إنشاء فيديو</button>
+        <input type="text" id="search-input" placeholder="🔍 بحث...">
+        <button id="theme-toggle" title="تبديل الثيم">🌓</button>
+      </div>
+    </header>
+
+    <main id="editor-area" style="display:none;">
+      <section class="settings-panel">
+        <div><label>السورة:</label><select id="surah-select"></select></div>
+        <div><label>القارئ:</label><select id="reciter-select"></select></div>
+        <div><label>الترجمة:</label><select id="translation-select"></select></div>
+        <div><label>التفسير:</label><select id="tafsir-select"></select></div>
+        <div><label>من آية:</label><select id="ayah-start-select"></select></div>
+        <div><label>إلى آية:</label><select id="ayah-end-select"></select></div>
+        <div><label>خط القرآن:</label><select id="font-select">
+          <option value="Amiri Quran">Amiri Quran</option>
+          <option value="Noto Naskh Arabic">Noto Naskh Arabic</option>
+          <option value="Tajawal">Tajawal</option>
+        </select></div>
+        <div><label>خلفية من المعرض:</label><input type="file" id="import-background" accept="image/*"></div>
+        <button id="apply-ai-bg" class="full-width-button">اقتراح خلفية بالذكاء الاصطناعي</button>
+        <button id="play-range-button" class="full-width-button">تشغيل الصوت</button>
+      </section>
+
+      <section id="preview-area">
+        <div id="video-preview" class="preview-container">
+          <h2 id="preview-surah-title"></h2>
+          <div id="preview-ayah-text" class="arabic-text"></div>
+        </div>
+      </section>
+
+      <section class="export-panel">
+        <div><label>دقة التصدير:</label><select id="resolution-select">
+          <option>720p</option><option selected>1080p</option><option>4K</option>
+        </select></div>
+        <div><label>تأثير/فلتر:</label><select id="filter-select">
+          <option value="none">None</option>
+          <option value="fade">Fade In/Out</option>
+          <option value="kenburns">Ken Burns</option>
+        </select></div>
+        <button id="export-btn" class="main-button">تصدير ومشاركة</button>
+      </section>
+    </main>
+
+    <footer><p>© 2025 Muslim Quran</p></footer>
+  </div>
+
+  <div id="loading-spinner" class="spinner-overlay"><div class="spinner"></div></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) window.addEventListener('load', ()=>navigator.serviceWorker.register('/sw.js'));
+  </script>
+</body>
+</html>
