@@ -1,6 +1,6 @@
 {
-  "name": "Muslim Quran",
-  "short_name": "QuranApp",
+  "name": "صانع فيديوهات القرآن الكريم",
+  "short_name": "QuranVideo",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -8,5 +8,7 @@
   "icons": [
     {"src":"icons/icon-192x192.png","sizes":"192x192","type":"image/png"},
     {"src":"icons/icon-512x512.png","sizes":"512x512","type":"image/png"}
-  ]
+  ],
+  "description": "أنشئ فيديوهات قرآنية مخصصة مع التلاوات والترجمة والخلفيات.",
+  "lang": "ar"
 }
