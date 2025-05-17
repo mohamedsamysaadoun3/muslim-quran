@@ -1,3 +1,4 @@
+/* ... (نفس :root والمتغيرات و body و .dark-theme) ... */
 :root {
   --primary-color: #00796b; /* Teal */
   --primary-color-darker: #004d40;
@@ -8,10 +9,10 @@
   --surface-dark: #2a2a2a; /* Slightly lighter dark for cards/panels */
   --text-light: #212121;
   --text-dark: #e0e0e0;
-  --font-family-quran: 'Amiri Quran', serif;
+  --font-family-quran: 'Amiri Quran', serif; /* Default Quran font */
   --font-family-ui: 'Tajawal', sans-serif;
-  --highlight-bg-light: rgba(255, 224, 130, 0.5); /* Light yellow highlight */
-  --highlight-bg-dark: rgba(0, 121, 107, 0.6); /* Teal highlight for dark theme */
+  --highlight-bg-light: rgba(255, 224, 130, 0.5); 
+  --highlight-bg-dark: rgba(0, 121, 107, 0.6); 
   --separator-light: #e0e0e0;
   --separator-dark: #424242;
   --shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -72,28 +73,33 @@ body {
 }
 .app-header h1 {
   margin: 0;
-  font-size: 1.4em; /* تعديل حجم الخط ليناسب الشاشة */
+  font-size: 1.4em; 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-grow: 1;
 }
-.theme-button { /* تنسيق موحد لأزرار الثيم */
+.theme-button { 
   background: transparent;
   border: 1px solid rgba(255,255,255,0.5);
   color: white;
-  font-size: 1.1em; /* تعديل حجم الأيقونة */
+  font-size: 1.1em; 
   cursor: pointer;
-  padding: 6px 10px; /* تعديل الحشو */
+  padding: 6px 10px; 
   border-radius: 4px;
   flex-shrink: 0;
-  line-height: 1; /* لضبط ارتفاع الأيقونة بشكل أفضل */
+  line-height: 1; 
 }
 .theme-button:hover {
   background-color: rgba(255,255,255,0.1);
 }
 .dark-theme .theme-button {
-   border: 1px solid rgba(0,0,0,0.3); /* حدود أغمق في الثيم الداكن إذا كان الزر فاتح */
+   border: 1px solid var(--separator-dark); 
+   color: var(--text-dark); /* لون الأيقونة في الثيم الداكن */
+}
+.dark-theme .editor-header .theme-button { /* لزر الثيم في الهيدر الداخلي */
+    border: 1px solid rgba(255,255,255,0.5); /* الحفاظ على وضوحه ضد خلفية الهيدر */
+    color: white;
 }
 
 
@@ -141,56 +147,49 @@ body {
 }
 .project-actions button:hover { color: var(--secondary-color); }
 
-.initial-footer { /* Footer for the initial screen */
+.initial-footer { 
   padding: 20px 15px;
   text-align: center;
-  margin-top: auto; /* Pushes footer to bottom if content is short */
-  background-color: var(--bg-light); /* Match body background if not a distinct bar */
+  margin-top: auto; 
+  background-color: var(--bg-light); 
 }
 .dark-theme .initial-footer {
     background-color: var(--bg-dark);
 }
 
 .button-primary-action {
-  background-color: #f0f0f0; 
-  color: var(--text-light); 
-  border: 1px solid #ccc; 
-  border-radius: 4px;
-  padding: 12px 25px; /* تكبير الزر قليلاً */
-  font-size: 1.1em; /* تكبير الخط قليلاً */
+  background-color: var(--primary-color); /* تغيير اللون ليكون أوضح */
+  color: white; 
+  border: none; /* إزالة الحدود */
+  border-radius: 6px; /* زيادة دائرية الحواف */
+  padding: 12px 25px; 
+  font-size: 1.1em; 
   font-family: var(--font-family-ui);
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition: background-color 0.2s;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow); /* إضافة ظل بسيط */
 }
 .button-primary-action:hover {
-  background-color: #e0e0e0;
-  border-color: #bbb;
+  background-color: var(--primary-color-darker);
 }
-.dark-theme .button-primary-action {
-  background-color: var(--surface-dark); /* استخدام لون السطح في الثيم الداكن */
-  color: var(--text-dark);
-  border-color: var(--separator-dark);
-}
-.dark-theme .button-primary-action:hover {
-  background-color: #3a3a3a; /* أغمق قليلاً عند المرور */
-}
+/* لا حاجة لتعديل خاص بالثيم الداكن هنا إذا كان اللون الأساسي مناسبًا */
+
 
 .copyright {
   font-size: 0.8em;
   color: var(--text-light); 
-  margin-top: 20px; /* مسافة أكبر فوق الحقوق */
+  margin-top: 20px; 
 }
 .dark-theme .copyright { color: var(--text-dark); }
 
 
-/* --- Editor Screen (نفس التنسيقات السابقة) --- */
+/* --- Editor Screen --- */
 #editor-screen {
-  display: flex; /* سيبقى flex عند الظهور */
+  display: flex; 
   flex-direction: column;
   height: 100vh;
   overflow: hidden; 
@@ -206,7 +205,7 @@ body {
   flex-shrink: 0;
 }
 .editor-header h2 { margin: 0; font-size: 1.2em; flex-grow: 1; }
-.icon-button, .action-button { /* .theme-button now handles theme toggles */
+.icon-button, .action-button {
   background: transparent;
   border: none;
   color: white;
@@ -259,41 +258,43 @@ body {
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
-    padding: 20px; /* زيادة الحشو الداخلي */
+    padding: 20px; 
     box-sizing: border-box;
     text-align: center;
 }
 
+.preview-text-no-shadow { /* كلاس جديد لإلغاء الظل */
+    text-shadow: none !important;
+}
+
 #preview-surah-title {
   color: #FFFFFF; 
-  font-size: 2em; /* تكبير خط عنوان السورة قليلاً */
-  margin-bottom: 15px; /* زيادة المسافة */
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  font-size: 2em; 
+  margin-bottom: 15px; 
+  /* text-shadow: 1px 1px 3px rgba(0,0,0,0.7); <-- ألغي من هنا، يتم التحكم به الآن بالكلاس */
 }
 
 #preview-ayah-text {
-  font-family: var(--font-family-quran);
-  font-size: 2.5em; /* هذا حجم أساسي، يمكن تعديله من شريط الأدوات */
+  font-family: var(--font-family-quran); /* سيتم تحديده من script.js بناءً على اختيار المستخدم */
+  font-size: 2.5em; 
   line-height: 1.8;
   color: #FFFFFF; 
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
   padding: 10px;
-  max-height: 65%; /* تعديل الارتفاع الأقصى */
+  max-height: 65%; 
   overflow-y: auto; 
   background-color: rgba(0,0,0,0); 
   border-radius: 5px;
-  width: 90%; /* تحديد عرض للنص ليتوسط بشكل أفضل */
+  width: 90%; 
 }
 .translation-text-overlay {
   font-family: var(--font-family-ui);
-  font-size: 1em; /* تعديل حجم خط الترجمة */
+  font-size: 1em; 
   color: #DDDDDD;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   margin-top: 10px;
   padding: 5px;
   max-height: 25%;
   overflow-y: auto;
-  width: 85%; /* تحديد عرض للترجمة */
+  width: 85%; 
 }
 
 
@@ -304,7 +305,7 @@ body {
   padding: 5px 0;
   overflow-x: auto; 
   flex-shrink: 0;
-  direction: ltr; /* Keep toolbar LTR for icon/text order */
+  direction: ltr; 
 }
 .dark-theme #editor-toolbar {
   background-color: var(--surface-dark);
@@ -313,32 +314,49 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  direction: rtl; /* Set content inside section to RTL */
+  justify-content: center; /* توسيط محتوى القسم */
+  direction: rtl; 
+  flex: 1; /* توزيع المساحة بالتساوي */
+  min-width: 80px; /* حد أدنى لعرض التبويب */
 }
 .toolbar-tab-button {
   background: none;
   border: none;
   color: var(--text-light); 
-  padding: 10px 15px;
+  padding: 8px 5px; /* تقليل الحشو الجانبي قليلاً */
   cursor: pointer;
   font-family: var(--font-family-ui);
   font-size: 0.9em;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  min-width: 70px; 
+  justify-content: center; /* توسيط الأيقونة والنص */
+  gap: 3px; /* تقليل المسافة بين الأيقونة والنص */
+  width: 100%; /* لجعل الزر يملأ القسم */
+  text-align: center; /* توسيط النص */
 }
 .dark-theme .toolbar-tab-button { color: var(--text-dark); }
-.toolbar-tab-button i { font-size: 1.5em; margin-bottom: 3px; }
-.toolbar-tab-button span { font-size: 0.8em; }
+.toolbar-tab-button i { 
+    font-size: 1.4em; /* تصغير الأيقونة قليلاً */
+    margin-bottom: 0; 
+}
+.toolbar-tab-button span { 
+    font-size: 0.75em; /* تصغير النص قليلاً */
+    white-space: nowrap; /* منع التفاف النص */
+}
 .toolbar-section.active .toolbar-tab-button {
   color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
+  /* border-bottom: 2px solid var(--primary-color); <-- يمكن إزالة هذا أو تغييره لمؤشر آخر */
 }
+.toolbar-section.active .toolbar-tab-button i,
+.toolbar-section.active .toolbar-tab-button span {
+    color: var(--primary-color); /* تأكيد لون الأيقونة والنص للتبويب النشط */
+}
+
+
 .toolbar-controls {
   position: fixed;
-  bottom: 65px; 
+  bottom: 60px;  /* تعديل الارتفاع ليتناسب مع شريط الأدوات الجديد */
   left: 0;
   right: 0;
   background-color: var(--surface-light);
@@ -349,7 +367,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
-  max-height: 40vh; 
+  max-height: 45vh; /* زيادة الارتفاع الأقصى قليلاً */
   overflow-y: auto;
 }
 .dark-theme .toolbar-controls {
@@ -389,7 +407,7 @@ body {
   transition: background-color 0.2s;
 }
 .control-button:hover, .main-button:hover { background: var(--primary-color-darker); }
-.control-button i, .main-button i { margin-left: 8px; } /* RTL: should be margin-right if icon is first */
+.control-button i, .main-button i { margin-left: 8px; }
 
 
 #ai-bg-suggestions {
@@ -422,7 +440,6 @@ body {
 
 /* Spinner */
 .spinner-overlay {
-  /* display: none;  Controlled by JS */
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
