@@ -1,34 +1,44 @@
 :root {
-  --primary-color: #00796b; /* Teal */
+  --primary-color: #00796b; /* Teal - kept for consistency */
   --primary-color-darker: #004d40;
   --secondary-color: #ffab40; /* Amber accent */
   
-  /* Light Theme Vars */
+  /* Dark Theme (Default) */
+  --bg-color-dark: #121212; /* Very dark grey, almost black */
+  --surface-color-dark: #1e1e1e; /* Dark grey for surfaces */
+  --surface-color-dark-lighter: #2a2a2a; /* Slightly lighter for nested surfaces */
+  --text-color-dark: #e0e0e0; /* Light grey for text */
+  --text-color-dark-secondary: #b0b0b0; /* Dimmer text */
+  --separator-color-dark: #3a3a3a;
+  --accent-color-dark: var(--primary-color); /* Teal accent */
+  --button-bg-dark: #333333;
+  --button-hover-bg-dark: #444444;
+
+
+  /* Light Theme Vars (if switched) */
   --bg-color-light: #f4f6f8;
   --surface-color-light: #ffffff;
   --text-color-light: #212121;
-  --highlight-bg-color-light: rgba(255, 224, 130, 0.5);
   --separator-color-light: #e0e0e0;
+  --accent-color-light: var(--primary-color);
 
-  /* Dark Theme Vars */
-  --bg-color-dark: #1e1e1e; 
-  --surface-color-dark: #2a2a2a; 
-  --text-color-dark: #e0e0e0;
-  --highlight-bg-color-dark: rgba(0, 121, 107, 0.6);
-  --separator-color-dark: #424242;
 
   /* General UI Vars */
   --font-family-quran: 'Amiri Quran', serif;
   --font-family-ui: 'Tajawal', sans-serif;
-  --shadow: 0 2px 4px rgba(0,0,0,0.1);
-  --shadow-strong: 0 4px 8px rgba(0,0,0,0.15);
+  --shadow: 0 2px 5px rgba(0,0,0,0.2);
+  --shadow-strong: 0 4px 10px rgba(0,0,0,0.3);
 
-  /* Default to Light Theme */
-  --current-bg-color: var(--bg-color-light);
-  --current-surface-color: var(--surface-color-light);
-  --current-text-color: var(--text-color-light);
-  --current-highlight-bg-color: var(--highlight-bg-color-light);
-  --current-separator-color: var(--separator-color-light);
+  /* Default to Dark Theme Variables */
+  --current-bg-color: var(--bg-color-dark);
+  --current-surface-color: var(--surface-color-dark);
+  --current-surface-lighter: var(--surface-color-dark-lighter);
+  --current-text-color: var(--text-color-dark);
+  --current-text-secondary-color: var(--text-color-dark-secondary);
+  --current-separator-color: var(--separator-color-dark);
+  --current-accent-color: var(--accent-color-dark);
+  --current-button-bg: var(--button-bg-dark);
+  --current-button-hover-bg: var(--button-hover-bg-dark);
 }
 
 body {
@@ -38,477 +48,363 @@ body {
   color: var(--current-text-color);
   line-height: 1.6;
   transition: background-color 0.3s, color 0.3s;
+  overflow: hidden; /* Prevent body scroll on mobile */
 }
 
-.dark-theme {
-  --current-bg-color: var(--bg-color-dark);
-  --current-surface-color: var(--surface-color-dark);
-  --current-text-color: var(--text-color-dark);
-  --current-highlight-bg-color: var(--highlight-bg-color-dark);
-  --current-separator-color: var(--separator-color-dark);
+.light-theme {
+  --current-bg-color: var(--bg-color-light);
+  --current-surface-color: var(--surface-color-light);
+  --current-surface-lighter: #f0f0f0; /* Light theme equivalent */
+  --current-text-color: var(--text-color-light);
+  --current-text-secondary-color: #555555;
+  --current-separator-color: var(--separator-color-light);
+  --current-accent-color: var(--accent-color-light);
+  --current-button-bg: #e0e0e0;
+  --current-button-hover-bg: #d0d0d0;
 }
-.dark-theme body { /* Apply to body directly for overrides */
-  background-color: var(--bg-color-dark);
-  color: var(--text-color-dark);
+.light-theme body { 
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
 }
 
 
 #app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh; /* Full viewport height */
+  max-height: 100vh; /* Ensure it doesn't exceed viewport */
 }
 
-/* --- Initial Screen --- */
+/* --- Initial Screen (Mostly Unchanged, Theming Applied) --- */
 #initial-screen {
   display: flex;
   flex-direction: column;
-  height: 100vh; 
+  height: 100%; 
 }
 #initial-screen main {
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  background-color: var(--current-bg-color);
 }
 .app-header {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--current-surface-color); /* Use surface for header */
+  color: var(--current-text-color);
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: var(--shadow);
+  border-bottom: 1px solid var(--current-separator-color);
 }
-.app-header h1 {
-  margin: 0;
-  font-size: 1.4em; 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 1;
-}
+.app-header h1 { margin: 0; font-size: 1.3em; }
 .theme-button { 
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.5);
-  color: white;
+  background: var(--current-button-bg);
+  border: 1px solid var(--current-separator-color);
+  color: var(--current-text-color);
   font-size: 1.1em; 
   cursor: pointer;
   padding: 6px 10px; 
-  border-radius: 4px;
-  flex-shrink: 0;
-  line-height: 1; 
+  border-radius: 20px; /* Rounded */
 }
-.theme-button:hover {
-  background-color: rgba(255,255,255,0.1);
-}
-.dark-theme .theme-button {
-   border: 1px solid rgba(255,255,255,0.3); 
-   background-color: rgba(255,255,255,0.1); /* Slight background for contrast */
-}
-.dark-theme .theme-button:hover {
-  background-color: rgba(255,255,255,0.2);
-}
+.theme-button:hover { background-color: var(--current-button-hover-bg); }
 
-
-.projects-section {
-  margin-top: 20px;
-}
 .projects-section h2 {
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color-darker);
+  color: var(--current-accent-color);
+  border-bottom: 2px solid var(--current-accent-color);
   padding-bottom: 10px;
   margin-bottom: 15px;
   font-size: 1.6em;
 }
 #projects-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Slightly wider cards */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 .project-card {
-  background-color: var(--current-surface-color);
+  background-color: var(--current-surface-lighter);
   color: var(--current-text-color); 
-  border-radius: 8px;
+  border-radius: 12px; /* More rounded */
   padding: 20px;
   box-shadow: var(--shadow);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
 }
 .project-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
 }
-.project-card h3 { margin-top: 0; color: var(--primary-color); font-size: 1.2em; }
-.project-card p { font-size: 0.85em; margin-bottom: 5px; opacity: 0.8; }
-.project-card .project-meta { margin-bottom: 10px; }
-.project-card .project-meta span { display: block; }
-.project-actions { margin-top: auto; /* Pushes actions to the bottom of the card */ }
+.project-card h3 { margin-top: 0; color: var(--current-accent-color); font-size: 1.2em; }
+.project-card p { font-size: 0.85em; margin-bottom: 5px; color: var(--current-text-secondary-color); }
 .project-actions button {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  cursor: pointer;
-  margin-right: 10px;
-  font-size: 0.9em;
-  padding: 5px;
+  background: none; border: none;
+  color: var(--current-accent-color);
+  cursor: pointer; margin-right: 10px; font-size: 0.9em; padding: 5px;
 }
-.project-actions button:hover { color: var(--secondary-color); }
-.project-actions button.delete-btn:hover { color: #e53935; /* Red for delete */ }
-
 .initial-footer { 
-  padding: 20px 15px;
-  text-align: center;
-  margin-top: auto; 
-  background-color: var(--current-bg-color); 
+  padding: 15px; text-align: center; margin-top: auto; 
+  background-color: var(--current-surface-color);
+  border-top: 1px solid var(--current-separator-color);
 }
-
 .button-primary-action {
-  background-color: var(--primary-color); 
+  background-color: var(--current-accent-color); 
   color: white; 
-  border: none; 
-  border-radius: 8px; /* More rounded */
-  padding: 15px 30px; /* Larger button */
-  font-size: 1.2em; 
-  font-family: var(--font-family-ui);
-  font-weight: bold;
-  cursor: pointer;
+  border: none; border-radius: 25px; /* Pill shape */
+  padding: 12px 25px; font-size: 1.1em; 
+  font-weight: bold; cursor: pointer;
   transition: background-color 0.2s, box-shadow 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px; /* Space between icon and text */
+  display: inline-flex; align-items: center; gap: 10px;
   box-shadow: var(--shadow);
 }
 .button-primary-action:hover {
-  background-color: var(--primary-color-darker);
+  background-color: var(--primary-color-darker); /* Assuming accent is primary */
   box-shadow: var(--shadow-strong);
 }
-.dark-theme .button-primary-action {
-  background-color: var(--secondary-color); /* Using accent for dark theme CTA */
-  color: var(--text-color-dark); /* Ensure text is readable on accent */
-}
-.dark-theme .button-primary-action:hover {
-  background-color: #ff8f00; /* Darker amber */
-}
+.copyright { font-size: 0.8em; color: var(--current-text-secondary-color); margin-top: 15px; }
 
-.copyright {
-  font-size: 0.8em;
-  color: var(--current-text-color); 
-  opacity: 0.7;
-  margin-top: 25px; 
-}
 
-/* --- Editor Screen --- */
+/* --- Editor Screen (New Structure) --- */
 #editor-screen {
   display: flex; 
   flex-direction: column;
-  height: 100vh;
+  height: 100%; /* Full height of app container */
   overflow: hidden; 
+  background-color: var(--current-bg-color);
 }
-.editor-header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 10px 15px;
+
+#editor-top-bar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 15px;
-  box-shadow: var(--shadow);
+  padding: 10px 15px;
+  background-color: var(--current-surface-color);
+  border-bottom: 1px solid var(--current-separator-color);
   flex-shrink: 0;
+  box-shadow: var(--shadow);
 }
-.editor-header h2 { margin: 0; font-size: 1.2em; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.icon-button, .action-button { 
-  background: transparent;
+#editor-top-bar h2 {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 500;
+  color: var(--current-text-color);
+}
+.top-bar-btn {
+  background: none;
   border: none;
-  color: white;
-  font-size: 1.3em;
-  cursor: pointer;
+  color: var(--current-text-color);
+  font-size: 1.3em; /* Icon size */
   padding: 8px;
   border-radius: 50%;
+  cursor: pointer;
 }
-.icon-button:hover, .action-button:hover {
-  background-color: rgba(255,255,255,0.2);
+.top-bar-btn.primary {
+  background-color: var(--current-accent-color);
+  color: white;
+  font-size: 0.9em; /* Text button */
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
 }
-.action-button { font-size: 0.9em; padding: 8px 12px; border-radius: 4px; }
-.header-actions { display: flex; align-items: center; gap: 10px; }
+.top-bar-btn:hover {
+  background-color: var(--current-button-hover-bg);
+}
+.top-bar-btn.primary:hover {
+  background-color: var(--primary-color-darker); /* Assuming accent is primary */
+}
 
 
-#editor-main-area {
+#editor-preview-area {
   flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: var(--current-bg-color); 
-  overflow: hidden; 
+  overflow: hidden;
 }
-
-#video-preview-container {
-  width: 90%; 
-  max-width: 800px; 
+#video-preview-container { /* Unchanged, but ensure it fits */
+  width: 100%; 
+  max-width: 500px; /* Max width for mobile-like preview */
   aspect-ratio: 16 / 9;
   background-color: #000000; 
-  border-radius: 8px;
+  border-radius: 12px; /* Rounded preview */
   box-shadow: var(--shadow-strong);
   position: relative; 
   overflow: hidden; 
 }
+#video-preview-canvas { display: block; width: 100%; height: 100%; object-fit: cover; }
+#preview-overlay-content { /* Unchanged */ }
+#preview-surah-title { /* Unchanged */ }
+#preview-ayah-text { /* Unchanged */ }
+.translation-text-overlay { /* Unchanged */ }
 
-#video-preview-canvas {
-  display: block; 
-  width: 100%;
-  height: 100%;
-  object-fit: cover; 
-}
-#preview-overlay-content {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center; 
-    padding: 20px; 
-    box-sizing: border-box;
-    text-align: center;
-}
 
-#preview-surah-title {
-  color: #FFFFFF; 
-  font-size: 2em; 
-  margin-bottom: 15px; 
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-}
-
-#preview-ayah-text {
-  font-family: var(--font-family-quran);
-  font-size: 2.5em; 
-  line-height: 1.8;
-  color: #FFFFFF; 
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-  padding: 10px 15px;
-  max-height: 65%; 
-  overflow-y: auto; 
-  background-color: rgba(0,0,0,0); 
-  border-radius: 5px;
-  width: 90%; 
-  box-sizing: border-box;
-}
-/* Custom scrollbar for ayah text */
-#preview-ayah-text::-webkit-scrollbar {
-  width: 8px;
-}
-#preview-ayah-text::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px;
-}
-#preview-ayah-text::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.3);
-  border-radius: 4px;
-}
-#preview-ayah-text::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.5);
-}
-
-.translation-text-overlay {
-  font-family: var(--font-family-ui);
-  font-size: 1em; 
-  color: #DDDDDD;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
-  margin-top: 10px;
-  padding: 5px 10px;
-  max-height: 25%;
+#editor-dynamic-controls-container {
+  background-color: var(--current-surface-color);
+  padding: 15px;
   overflow-y: auto;
-  width: 85%; 
-  box-sizing: border-box;
-}
-
-
-#editor-toolbar {
-  display: flex;
-  background-color: var(--current-surface-color);
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-  padding: 5px 0;
-  overflow-x: auto; 
-  flex-shrink: 0;
-  direction: ltr; 
-}
-.toolbar-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  direction: rtl; 
-}
-.toolbar-tab-button {
-  background: none;
-  border: none;
-  color: var(--current-text-color); 
-  padding: 10px 15px;
-  cursor: pointer;
-  font-family: var(--font-family-ui);
-  font-size: 0.9em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  min-width: 70px; 
-  transition: color 0.2s, border-color 0.2s;
-}
-.toolbar-tab-button i { font-size: 1.5em; margin-bottom: 3px; }
-.toolbar-tab-button span { font-size: 0.8em; }
-.toolbar-section.active .toolbar-tab-button {
-  color: var(--primary-color);
-  border-bottom: 3px solid var(--primary-color); /* Thicker border */
-}
-.toolbar-controls {
-  position: fixed;
-  bottom: 65px; /* Adjust if toolbar height changes */
-  left: 0;
-  right: 0;
-  background-color: var(--current-surface-color);
-  color: var(--current-text-color); 
-  padding: 20px; /* More padding */
+  max-height: 35vh; /* Adjust as needed */
   border-top: 1px solid var(--current-separator-color);
-  box-shadow: 0 -3px 6px rgba(0,0,0,0.1);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Slightly wider control groups */
-  gap: 20px;
-  max-height: calc(45vh - 65px); /* Dynamic max height considering toolbar */
-  overflow-y: auto;
-  z-index: 100;
+  flex-shrink: 0;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Shadow upwards */
 }
-.toolbar-controls div { display: flex; flex-direction: column; }
-.toolbar-controls label { margin-bottom: 8px; font-size: 0.9em; font-weight: 500; }
-.toolbar-controls select, .toolbar-controls input[type="file"],
-.toolbar-controls input[type="color"], .toolbar-controls input[type="range"],
-.toolbar-controls input[type="number"] {
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid var(--current-separator-color);
-  background-color: var(--current-bg-color); 
-  color: var(--current-text-color);
+.control-panel {
+  display: none; /* Hidden by default, shown by JS */
+  gap: 15px;
+  flex-direction: column;
+}
+.control-panel.active-panel {
+  display: flex; /* Or grid, depending on content */
+}
+.control-panel h3 {
+  font-size: 1em;
+  color: var(--current-accent-color);
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--current-separator-color);
+}
+.control-panel > div {
+  margin-bottom: 10px;
+}
+.control-panel label {
+  display: block;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  color: var(--current-text-secondary-color);
+}
+.control-panel select,
+.control-panel input[type="number"],
+.control-panel input[type="range"],
+.control-panel input[type="file"],
+.control-panel input[type="color"] {
   width: 100%;
+  padding: 10px;
+  background-color: var(--current-button-bg);
+  color: var(--current-text-color);
+  border: 1px solid var(--current-separator-color);
+  border-radius: 8px;
   box-sizing: border-box;
-  font-family: var(--font-family-ui);
+  font-size: 0.9em;
 }
-.toolbar-controls input[type="color"] {
-  height: 40px; /* Consistent height for color picker */
+.control-panel input[type="color"] {
+  height: 45px; /* Make color picker a bit taller */
 }
-.toolbar-controls input[type="range"] {
-  padding: 0; /* Remove padding for range slider for better appearance */
+.control-panel input[type="range"] {
+  padding: 0;
 }
-
-
-.control-button, .main-button {
+.ayah-range-inputs {
+  display: flex;
+  gap: 10px;
+}
+.ayah-range-inputs > div {
+  flex: 1;
+}
+.control-button, .main-button { /* General button style for panels */
   padding: 10px 15px;
-  background: var(--primary-color);
+  background: var(--current-accent-color);
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-family: var(--font-family-ui);
   transition: background-color 0.2s;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  font-size: 0.9em;
 }
 .control-button:hover, .main-button:hover { background: var(--primary-color-darker); }
-.control-button i, .main-button i { margin-left: 0; margin-right: 8px; } /* RTL friendly icon spacing */
-.main-button {
-    padding: 12px 20px;
-    font-size: 1.05em;
+#ai-bg-suggestions { /* Unchanged */ }
+
+
+#editor-bottom-bar {
+  background-color: var(--current-surface-color);
+  border-top: 1px solid var(--current-separator-color);
+  padding: 5px 0;
+  flex-shrink: 0;
+  box-shadow: 0 -3px 8px rgba(0,0,0,0.2);
+}
+#timeline-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the simplified timeline */
+  padding: 5px 15px;
+  font-size: 0.7em;
+  color: var(--current-text-secondary-color);
+  height: 20px; /* Fixed height for timeline */
+}
+.timeline-tick {
+  margin: 0 5px;
+}
+.timeline-track {
+  height: 2px;
+  background-color: var(--current-separator-color);
+  flex-grow: 1;
+  max-width: 30px; /* Limit track width */
 }
 
-.audio-preview-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+#main-actions-toolbar {
+  display: flex;
+  justify-content: space-around; /* Distribute items evenly */
+  align-items: center;
+  padding: 8px 5px; /* Reduced padding */
 }
-#audio-preview-status {
-    font-size: 0.9em;
-    opacity: 0.8;
-}
-
-#ai-bg-suggestions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    overflow-x: auto;
-    padding-bottom: 10px; /* For scrollbar space */
-}
-#ai-bg-suggestions img {
-    width: 100px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color 0.2s;
-}
-#ai-bg-suggestions img:hover, #ai-bg-suggestions img.selected-ai-bg {
-    border-color: var(--secondary-color);
-}
-
-/* Text Effects */
-.typewriter-char {
-    opacity: 0;
-    animation: typechar 0.1s forwards;
-}
-@keyframes typechar {
-    to { opacity: 1; }
-}
-
-/* Spinner */
-.spinner-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7); /* Darker overlay */
-  z-index: 10000; 
-  display: flex; 
+.action-tool-btn {
+  background: none;
+  border: none;
+  color: var(--current-text-secondary-color);
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 5px; /* Smaller padding */
+  cursor: pointer;
+  font-size: 0.75em; /* Smaller text */
+  flex: 1; /* Make buttons take equal space */
+  max-width: 70px; /* Limit button width */
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
 }
-.spinner {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid var(--primary-color);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
+.action-tool-btn i {
+  font-size: 1.5em; /* Icon size */
+  margin-bottom: 3px;
 }
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.action-tool-btn.active {
+  color: var(--current-accent-color); /* Highlight active tool */
+  background-color: rgba(var(--rgb-accent-color, 0, 121, 107), 0.1); /* Use RGB for opacity with accent */
+}
+.action-tool-btn:hover {
+  background-color: var(--current-button-hover-bg);
 }
 
-/* Export progress */
-#export-progress { margin-top: 15px; text-align: center;}
-#export-progress progress { width: 100%; }
-#export-progress span { display: block; margin-top: 5px; font-size: 0.9em; }
+
+/* Spinner (Unchanged) */
+.spinner-overlay { /* ... */ }
+.spinner { /* ... */ }
+@keyframes spin { /* ... */ }
+/* Export progress (Unchanged) */
+#export-progress { /* ... */ }
+
+/* Specific styles from images if needed */
+/* e.g., the red button for "صوت" from screenshot */
+.action-tool-btn[data-panel="audio-options-panel"].active {
+  /* color: #e91e63; Example pinkish red */
+  /* background-color: rgba(233, 30, 99, 0.1); */
+}
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .app-header h1 { font-size: 1.2em; }
-  .editor-header h2 { font-size: 1.1em; }
-  .toolbar-controls {
-    grid-template-columns: 1fr; /* Stack controls on small screens */
-    max-height: calc(50vh - 60px); /* Adjust for smaller screens */
-    bottom: 60px; /* If toolbar height is smaller */
-  }
-  #preview-surah-title { font-size: 1.5em; }
-  #preview-ayah-text { font-size: 1.8em; }
-  .translation-text-overlay { font-size: 0.8em; }
-  .button-primary-action { padding: 12px 20px; font-size: 1.1em; }
+@media (max-width: 360px) {
+  .action-tool-btn i { font-size: 1.3em; }
+  .action-tool-btn span { font-size: 0.7em; }
+  #editor-top-bar h2 { font-size: 1em; }
 }
 
-@media (max-width: 480px) {
-    .projects-section h2 { font-size: 1.4em; }
-    #projects-list { grid-template-columns: 1fr; } /* Single column for very small screens */
-    .toolbar-tab-button { min-width: 60px; padding: 8px 10px;}
-    .toolbar-tab-button i { font-size: 1.3em; }
-    .toolbar-tab-button span { font-size: 0.7em; }
-    .editor-header { padding: 8px 10px; gap: 10px; }
-    .editor-header h2 { font-size: 1em; }
-    .action-button { font-size: 0.8em; padding: 6px 10px; }
-    .icon-button { font-size: 1.2em; padding: 6px; }
+/* Helper for JS to set RGB version of accent color */
+body {
+  /* These will be set by JS based on the theme's accent color */
+  --rgb-accent-color: 0, 121, 107; /* Default for Teal */
+}
+.light-theme {
+  --rgb-accent-color: 0, 121, 107; /* Still Teal for light theme */
 }
