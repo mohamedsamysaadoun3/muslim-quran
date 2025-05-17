@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Muslim Quran Video Creator</title>
+  <title>صانع فيديوهات القرآن الكريم</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
@@ -28,6 +28,7 @@
           <h2>مشاريعي المحفوظة</h2>
           <div id="projects-list">
             <p id="no-projects-message">لا توجد مشاريع محفوظة بعد.</p>
+            <!-- Project cards will be injected here -->
           </div>
         </div>
       </main>
@@ -37,10 +38,10 @@
       </footer>
     </div>
 
-    <!-- Editor Screen (نفس المحتوى السابق) -->
+    <!-- Editor Screen -->
     <div id="editor-screen" style="display:none;">
       <header class="editor-header">
-        <button id="back-to-initial-screen-btn" class="icon-button" title="العودة"><i class="fas fa-arrow-right"></i></button>
+        <button id="back-to-initial-screen-btn" class="icon-button" title="العودة"><i class="fas fa-arrow-left"></i></button>
         <h2 id="current-project-title">مشروع جديد</h2>
         <div class="header-actions">
           <button id="save-project-btn" class="action-button">حفظ المشروع</button>
@@ -56,6 +57,7 @@
             <div id="preview-ayah-text" class="arabic-text"></div>
             <div id="preview-translation-text" class="translation-text-overlay"></div>
           </div>
+          <audio id="ayah-audio-player" style="display:none;"></audio>
         </div>
       </main>
 
@@ -95,6 +97,7 @@
           <div class="toolbar-controls" id="background-controls" style="display:none;">
             <div><label>استيراد خلفية (صورة/فيديو):</label><input type="file" id="import-background" accept="image/*,video/*"></div>
             <button id="apply-ai-bg" class="control-button">اقتراح خلفية (AI)</button>
+            <div id="ai-bg-suggestions-loader" style="display:none;">جاري تحميل الاقتراحات...</div>
             <div id="ai-bg-suggestions"></div>
           </div>
         </div>
@@ -102,8 +105,12 @@
         <div class="toolbar-section" id="toolbar-audio-section">
           <button class="toolbar-tab-button" data-target="audio-controls"><i class="fas fa-play"></i><span>الصوت</span></button>
           <div class="toolbar-controls" id="audio-controls" style="display:none;">
-             <button id="play-range-button" class="control-button"><i class="fas fa-play-circle"></i> تشغيل المعاينة</button>
-             <div><label>تأخير بين الآيات (ثواني):</label><input type="number" id="delay-between-ayahs" value="1" min="0" step="0.5"></div>
+             <div class="audio-preview-controls">
+                <button id="play-pause-audio-preview-btn" class="control-button"><i class="fas fa-play-circle"></i> تشغيل معاينة الصوت</button>
+                <button id="stop-audio-preview-btn" class="control-button" style="display:none;"><i class="fas fa-stop-circle"></i> إيقاف</button>
+                <span id="audio-preview-status"></span>
+             </div>
+             <div><label>تأخير بين الآيات (ثواني - للعرض بدون صوت):</label><input type="number" id="delay-between-ayahs" value="1" min="0" step="0.5"></div>
           </div>
         </div>
 
@@ -119,7 +126,8 @@
               <option value="none">بدون</option>
               <option value="fade">تلاشي</option>
             </select></div>
-            <button id="export-btn" class="main-button"><i class="fas fa-video"></i> تصدير الفيديو (بدون صوت)</button>
+            <button id="export-btn" class="main-button"><i class="fas fa-video"></i> تصدير الفيديو (حالياً بدون صوت)</button>
+            <p style="font-size: 0.8em; opacity: 0.7;">ملاحظة: تصدير الصوت مع الفيديو قيد التطوير.</p>
             <div id="export-progress" style="display:none;">
                 <progress id="export-progress-bar" value="0" max="100"></progress>
                 <span id="export-progress-text">0%</span>
@@ -138,7 +146,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
+        navigator.serviceWorker.register('./sw.js').then(registration => { // Changed to ./sw.js
           console.log('SW registered: ', registration);
         }).catch(registrationError => {
           console.log('SW registration failed: ', registrationError);
