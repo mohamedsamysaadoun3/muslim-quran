@@ -2,47 +2,56 @@
   --primary-color: #00796b; /* Teal */
   --primary-color-darker: #004d40;
   --secondary-color: #ffab40; /* Amber accent */
-  --bg-light: #f4f6f8;
-  --bg-dark: #1e1e1e; /* Darker grey */
-  --surface-light: #ffffff;
-  --surface-dark: #2a2a2a; /* Slightly lighter dark for cards/panels */
-  --text-light: #212121;
-  --text-dark: #e0e0e0;
+  
+  /* Light Theme Vars */
+  --bg-color-light: #f4f6f8;
+  --surface-color-light: #ffffff;
+  --text-color-light: #212121;
+  --highlight-bg-color-light: rgba(255, 224, 130, 0.5);
+  --separator-color-light: #e0e0e0;
+
+  /* Dark Theme Vars */
+  --bg-color-dark: #1e1e1e; 
+  --surface-color-dark: #2a2a2a; 
+  --text-color-dark: #e0e0e0;
+  --highlight-bg-color-dark: rgba(0, 121, 107, 0.6);
+  --separator-color-dark: #424242;
+
+  /* General UI Vars */
   --font-family-quran: 'Amiri Quran', serif;
   --font-family-ui: 'Tajawal', sans-serif;
-  --highlight-bg-light: rgba(255, 224, 130, 0.5); /* Light yellow highlight */
-  --highlight-bg-dark: rgba(0, 121, 107, 0.6); /* Teal highlight for dark theme */
-  --separator-light: #e0e0e0;
-  --separator-dark: #424242;
   --shadow: 0 2px 4px rgba(0,0,0,0.1);
   --shadow-strong: 0 4px 8px rgba(0,0,0,0.15);
+
+  /* Default to Light Theme */
+  --current-bg-color: var(--bg-color-light);
+  --current-surface-color: var(--surface-color-light);
+  --current-text-color: var(--text-color-light);
+  --current-highlight-bg-color: var(--highlight-bg-color-light);
+  --current-separator-color: var(--separator-color-light);
 }
 
 body {
   margin: 0;
   font-family: var(--font-family-ui);
-  background-color: var(--bg-light);
-  color: var(--text-light);
+  background-color: var(--current-bg-color);
+  color: var(--current-text-color);
   line-height: 1.6;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .dark-theme {
-  --bg-light: var(--bg-dark);
-  --bg-dark: var(--bg-light); 
-  --surface-light: var(--surface-dark);
-  --surface-dark: var(--surface-light);
-  --text-light: var(--text-dark);
-  --text-dark: var(--text-light);
-  --highlight-bg-light: var(--highlight-bg-dark);
-  --highlight-bg-dark: var(--highlight-bg-light);
-  --separator-light: var(--separator-dark);
-  --separator-dark: var(--separator-light);
+  --current-bg-color: var(--bg-color-dark);
+  --current-surface-color: var(--surface-color-dark);
+  --current-text-color: var(--text-color-dark);
+  --current-highlight-bg-color: var(--highlight-bg-color-dark);
+  --current-separator-color: var(--separator-color-dark);
 }
-.dark-theme body {
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
+.dark-theme body { /* Apply to body directly for overrides */
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
 }
+
 
 #app-container {
   display: flex;
@@ -72,28 +81,32 @@ body {
 }
 .app-header h1 {
   margin: 0;
-  font-size: 1.4em; /* تعديل حجم الخط ليناسب الشاشة */
+  font-size: 1.4em; 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-grow: 1;
 }
-.theme-button { /* تنسيق موحد لأزرار الثيم */
+.theme-button { 
   background: transparent;
   border: 1px solid rgba(255,255,255,0.5);
   color: white;
-  font-size: 1.1em; /* تعديل حجم الأيقونة */
+  font-size: 1.1em; 
   cursor: pointer;
-  padding: 6px 10px; /* تعديل الحشو */
+  padding: 6px 10px; 
   border-radius: 4px;
   flex-shrink: 0;
-  line-height: 1; /* لضبط ارتفاع الأيقونة بشكل أفضل */
+  line-height: 1; 
 }
 .theme-button:hover {
   background-color: rgba(255,255,255,0.1);
 }
 .dark-theme .theme-button {
-   border: 1px solid rgba(0,0,0,0.3); /* حدود أغمق في الثيم الداكن إذا كان الزر فاتح */
+   border: 1px solid rgba(255,255,255,0.3); 
+   background-color: rgba(255,255,255,0.1); /* Slight background for contrast */
+}
+.dark-theme .theme-button:hover {
+  background-color: rgba(255,255,255,0.2);
 }
 
 
@@ -109,28 +122,29 @@ body {
 }
 #projects-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Slightly wider cards */
+  gap: 20px;
 }
 .project-card {
-  background-color: var(--surface-light);
-  color: var(--text-light); 
+  background-color: var(--current-surface-color);
+  color: var(--current-text-color); 
   border-radius: 8px;
-  padding: 15px;
+  padding: 20px;
   box-shadow: var(--shadow);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-}
-.dark-theme .project-card {
-  background-color: var(--surface-dark);
-  color: var(--text-dark);
+  display: flex;
+  flex-direction: column;
 }
 .project-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
 }
-.project-card h3 { margin-top: 0; color: var(--primary-color); }
-.project-card p { font-size: 0.9em; margin-bottom: 5px; }
+.project-card h3 { margin-top: 0; color: var(--primary-color); font-size: 1.2em; }
+.project-card p { font-size: 0.85em; margin-bottom: 5px; opacity: 0.8; }
+.project-card .project-meta { margin-bottom: 10px; }
+.project-card .project-meta span { display: block; }
+.project-actions { margin-top: auto; /* Pushes actions to the bottom of the card */ }
 .project-actions button {
   background: none;
   border: none;
@@ -138,59 +152,56 @@ body {
   cursor: pointer;
   margin-right: 10px;
   font-size: 0.9em;
+  padding: 5px;
 }
 .project-actions button:hover { color: var(--secondary-color); }
+.project-actions button.delete-btn:hover { color: #e53935; /* Red for delete */ }
 
-.initial-footer { /* Footer for the initial screen */
+.initial-footer { 
   padding: 20px 15px;
   text-align: center;
-  margin-top: auto; /* Pushes footer to bottom if content is short */
-  background-color: var(--bg-light); /* Match body background if not a distinct bar */
-}
-.dark-theme .initial-footer {
-    background-color: var(--bg-dark);
+  margin-top: auto; 
+  background-color: var(--current-bg-color); 
 }
 
 .button-primary-action {
-  background-color: #f0f0f0; 
-  color: var(--text-light); 
-  border: 1px solid #ccc; 
-  border-radius: 4px;
-  padding: 12px 25px; /* تكبير الزر قليلاً */
-  font-size: 1.1em; /* تكبير الخط قليلاً */
+  background-color: var(--primary-color); 
+  color: white; 
+  border: none; 
+  border-radius: 8px; /* More rounded */
+  padding: 15px 30px; /* Larger button */
+  font-size: 1.2em; 
   font-family: var(--font-family-ui);
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  gap: 10px; /* Space between icon and text */
+  box-shadow: var(--shadow);
 }
 .button-primary-action:hover {
-  background-color: #e0e0e0;
-  border-color: #bbb;
+  background-color: var(--primary-color-darker);
+  box-shadow: var(--shadow-strong);
 }
 .dark-theme .button-primary-action {
-  background-color: var(--surface-dark); /* استخدام لون السطح في الثيم الداكن */
-  color: var(--text-dark);
-  border-color: var(--separator-dark);
+  background-color: var(--secondary-color); /* Using accent for dark theme CTA */
+  color: var(--text-color-dark); /* Ensure text is readable on accent */
 }
 .dark-theme .button-primary-action:hover {
-  background-color: #3a3a3a; /* أغمق قليلاً عند المرور */
+  background-color: #ff8f00; /* Darker amber */
 }
 
 .copyright {
   font-size: 0.8em;
-  color: var(--text-light); 
-  margin-top: 20px; /* مسافة أكبر فوق الحقوق */
+  color: var(--current-text-color); 
+  opacity: 0.7;
+  margin-top: 25px; 
 }
-.dark-theme .copyright { color: var(--text-dark); }
 
-
-/* --- Editor Screen (نفس التنسيقات السابقة) --- */
+/* --- Editor Screen --- */
 #editor-screen {
-  display: flex; /* سيبقى flex عند الظهور */
+  display: flex; 
   flex-direction: column;
   height: 100vh;
   overflow: hidden; 
@@ -205,8 +216,8 @@ body {
   box-shadow: var(--shadow);
   flex-shrink: 0;
 }
-.editor-header h2 { margin: 0; font-size: 1.2em; flex-grow: 1; }
-.icon-button, .action-button { /* .theme-button now handles theme toggles */
+.editor-header h2 { margin: 0; font-size: 1.2em; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.icon-button, .action-button { 
   background: transparent;
   border: none;
   color: white;
@@ -228,11 +239,8 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: var(--bg-light); 
+  background-color: var(--current-bg-color); 
   overflow: hidden; 
-}
-.dark-theme #editor-main-area {
-  background-color: var(--bg-dark);
 }
 
 #video-preview-container {
@@ -259,66 +267,81 @@ body {
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
-    padding: 20px; /* زيادة الحشو الداخلي */
+    padding: 20px; 
     box-sizing: border-box;
     text-align: center;
 }
 
 #preview-surah-title {
   color: #FFFFFF; 
-  font-size: 2em; /* تكبير خط عنوان السورة قليلاً */
-  margin-bottom: 15px; /* زيادة المسافة */
+  font-size: 2em; 
+  margin-bottom: 15px; 
   text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
 #preview-ayah-text {
   font-family: var(--font-family-quran);
-  font-size: 2.5em; /* هذا حجم أساسي، يمكن تعديله من شريط الأدوات */
+  font-size: 2.5em; 
   line-height: 1.8;
   color: #FFFFFF; 
   text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-  padding: 10px;
-  max-height: 65%; /* تعديل الارتفاع الأقصى */
+  padding: 10px 15px;
+  max-height: 65%; 
   overflow-y: auto; 
   background-color: rgba(0,0,0,0); 
   border-radius: 5px;
-  width: 90%; /* تحديد عرض للنص ليتوسط بشكل أفضل */
+  width: 90%; 
+  box-sizing: border-box;
 }
+/* Custom scrollbar for ayah text */
+#preview-ayah-text::-webkit-scrollbar {
+  width: 8px;
+}
+#preview-ayah-text::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+#preview-ayah-text::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+}
+#preview-ayah-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.5);
+}
+
 .translation-text-overlay {
   font-family: var(--font-family-ui);
-  font-size: 1em; /* تعديل حجم خط الترجمة */
+  font-size: 1em; 
   color: #DDDDDD;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   margin-top: 10px;
-  padding: 5px;
+  padding: 5px 10px;
   max-height: 25%;
   overflow-y: auto;
-  width: 85%; /* تحديد عرض للترجمة */
+  width: 85%; 
+  box-sizing: border-box;
 }
 
 
 #editor-toolbar {
   display: flex;
-  background-color: var(--surface-light);
+  background-color: var(--current-surface-color);
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
   padding: 5px 0;
   overflow-x: auto; 
   flex-shrink: 0;
-  direction: ltr; /* Keep toolbar LTR for icon/text order */
-}
-.dark-theme #editor-toolbar {
-  background-color: var(--surface-dark);
+  direction: ltr; 
 }
 .toolbar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  direction: rtl; /* Set content inside section to RTL */
+  direction: rtl; 
 }
 .toolbar-tab-button {
   background: none;
   border: none;
-  color: var(--text-light); 
+  color: var(--current-text-color); 
   padding: 10px 15px;
   cursor: pointer;
   font-family: var(--font-family-ui);
@@ -328,55 +351,52 @@ body {
   align-items: center;
   gap: 4px;
   min-width: 70px; 
+  transition: color 0.2s, border-color 0.2s;
 }
-.dark-theme .toolbar-tab-button { color: var(--text-dark); }
 .toolbar-tab-button i { font-size: 1.5em; margin-bottom: 3px; }
 .toolbar-tab-button span { font-size: 0.8em; }
 .toolbar-section.active .toolbar-tab-button {
   color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 3px solid var(--primary-color); /* Thicker border */
 }
 .toolbar-controls {
   position: fixed;
-  bottom: 65px; 
+  bottom: 65px; /* Adjust if toolbar height changes */
   left: 0;
   right: 0;
-  background-color: var(--surface-light);
-  color: var(--text-light); 
-  padding: 15px;
-  border-top: 1px solid var(--separator-light);
+  background-color: var(--current-surface-color);
+  color: var(--current-text-color); 
+  padding: 20px; /* More padding */
+  border-top: 1px solid var(--current-separator-color);
   box-shadow: 0 -3px 6px rgba(0,0,0,0.1);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  max-height: 40vh; 
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Slightly wider control groups */
+  gap: 20px;
+  max-height: calc(45vh - 65px); /* Dynamic max height considering toolbar */
   overflow-y: auto;
-}
-.dark-theme .toolbar-controls {
-  background-color: var(--surface-dark);
-  color: var(--text-dark);
-  border-top: 1px solid var(--separator-dark);
+  z-index: 100;
 }
 .toolbar-controls div { display: flex; flex-direction: column; }
-.toolbar-controls label { margin-bottom: 5px; font-size: 0.9em; }
+.toolbar-controls label { margin-bottom: 8px; font-size: 0.9em; font-weight: 500; }
 .toolbar-controls select, .toolbar-controls input[type="file"],
 .toolbar-controls input[type="color"], .toolbar-controls input[type="range"],
 .toolbar-controls input[type="number"] {
-  padding: 8px;
+  padding: 10px;
   border-radius: 4px;
-  border: 1px solid var(--separator-light);
-  background-color: var(--bg-light); 
-  color: var(--text-light);
+  border: 1px solid var(--current-separator-color);
+  background-color: var(--current-bg-color); 
+  color: var(--current-text-color);
   width: 100%;
   box-sizing: border-box;
+  font-family: var(--font-family-ui);
 }
-.dark-theme .toolbar-controls select, .dark-theme .toolbar-controls input[type="file"],
-.dark-theme .toolbar-controls input[type="color"], .dark-theme .toolbar-controls input[type="range"],
-.dark-theme .toolbar-controls input[type="number"] {
-  border: 1px solid var(--separator-dark);
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
+.toolbar-controls input[type="color"] {
+  height: 40px; /* Consistent height for color picker */
 }
+.toolbar-controls input[type="range"] {
+  padding: 0; /* Remove padding for range slider for better appearance */
+}
+
 
 .control-button, .main-button {
   padding: 10px 15px;
@@ -387,17 +407,34 @@ body {
   cursor: pointer;
   font-family: var(--font-family-ui);
   transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .control-button:hover, .main-button:hover { background: var(--primary-color-darker); }
-.control-button i, .main-button i { margin-left: 8px; } /* RTL: should be margin-right if icon is first */
+.control-button i, .main-button i { margin-left: 0; margin-right: 8px; } /* RTL friendly icon spacing */
+.main-button {
+    padding: 12px 20px;
+    font-size: 1.05em;
+}
 
+.audio-preview-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+#audio-preview-status {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
 
 #ai-bg-suggestions {
     display: flex;
     gap: 10px;
     margin-top: 10px;
     overflow-x: auto;
-    padding-bottom: 10px;
+    padding-bottom: 10px; /* For scrollbar space */
 }
 #ai-bg-suggestions img {
     width: 100px;
@@ -406,6 +443,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     border: 2px solid transparent;
+    transition: border-color 0.2s;
 }
 #ai-bg-suggestions img:hover, #ai-bg-suggestions img.selected-ai-bg {
     border-color: var(--secondary-color);
@@ -422,10 +460,9 @@ body {
 
 /* Spinner */
 .spinner-overlay {
-  /* display: none;  Controlled by JS */
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7); /* Darker overlay */
   z-index: 10000; 
   display: flex; 
   align-items: center;
@@ -440,9 +477,38 @@ body {
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Export progress */
-#export-progress { margin-top: 10px; text-align: center;}
-#export-progress-bar { width: 80%; }
+#export-progress { margin-top: 15px; text-align: center;}
+#export-progress progress { width: 100%; }
+#export-progress span { display: block; margin-top: 5px; font-size: 0.9em; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-header h1 { font-size: 1.2em; }
+  .editor-header h2 { font-size: 1.1em; }
+  .toolbar-controls {
+    grid-template-columns: 1fr; /* Stack controls on small screens */
+    max-height: calc(50vh - 60px); /* Adjust for smaller screens */
+    bottom: 60px; /* If toolbar height is smaller */
+  }
+  #preview-surah-title { font-size: 1.5em; }
+  #preview-ayah-text { font-size: 1.8em; }
+  .translation-text-overlay { font-size: 0.8em; }
+  .button-primary-action { padding: 12px 20px; font-size: 1.1em; }
+}
+
+@media (max-width: 480px) {
+    .projects-section h2 { font-size: 1.4em; }
+    #projects-list { grid-template-columns: 1fr; } /* Single column for very small screens */
+    .toolbar-tab-button { min-width: 60px; padding: 8px 10px;}
+    .toolbar-tab-button i { font-size: 1.3em; }
+    .toolbar-tab-button span { font-size: 0.7em; }
+    .editor-header { padding: 8px 10px; gap: 10px; }
+    .editor-header h2 { font-size: 1em; }
+    .action-button { font-size: 0.8em; padding: 6px 10px; }
+    .icon-button { font-size: 1.2em; padding: 6px; }
+}
