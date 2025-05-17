@@ -136,44 +136,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Event Listeners Setup ---
   function setupEventListeners() {
-    goToEditorBtn.addEventListener('click', () => showScreen('editor'));
-    backToInitialScreenBtn.addEventListener('click', () => {
-      stopAudioPreview(); // Stop audio if playing
-      showScreen('initial');
-      loadProjects(); // Refresh project list
-      resetToNewProject();
+    if (goToEditorBtn) {
+        goToEditorBtn.addEventListener('click', () => {
+          resetToNewProject(); 
+          showScreen('editor');
+        });
+    } else {
+        console.error("Button 'go-to-editor-btn' not found!");
+    }
+
+    if (backToInitialScreenBtn) {
+        backToInitialScreenBtn.addEventListener('click', () => {
+          stopAudioPreview(); // Stop audio if playing
+          showScreen('initial');
+          // resetToNewProject(); // لا نريد إعادة تعيين المشروع عند العودة، بل فقط عرضه
+        });
+    } else {
+        console.error("Button 'back-to-initial-screen-btn' not found!");
+    }
+
+
+    [themeToggleInitial, themeToggleEditor].forEach(btn => {
+        if(btn) btn.addEventListener('click', toggleTheme)
     });
 
-    [themeToggleInitial, themeToggleEditor].forEach(btn => btn.addEventListener('click', toggleTheme));
-
-    surahSelect.addEventListener('change', handleSurahChange);
-    ayahStartSelect.addEventListener('change', handleAyahRangeChange);
-    ayahEndSelect.addEventListener('change', handleAyahRangeChange);
-    [reciterSelect, translationSelect].forEach(el => el.addEventListener('change', updateProjectFromUIAndPreview));
-
-    fontSelect.addEventListener('change', updateProjectFromUIAndPreview);
-    fontSizeSlider.addEventListener('input', () => {
-      fontSizeValue.textContent = `${fontSizeSlider.value}px`;
-      updateProjectFromUIAndPreview();
+    if(surahSelect) surahSelect.addEventListener('change', handleSurahChange);
+    if(ayahStartSelect) ayahStartSelect.addEventListener('change', handleAyahRangeChange);
+    if(ayahEndSelect) ayahEndSelect.addEventListener('change', handleAyahRangeChange);
+    [reciterSelect, translationSelect].forEach(el => {
+        if(el) el.addEventListener('change', updateProjectFromUIAndPreview)
     });
-    [fontColorPicker, ayahBgColorPicker].forEach(el => el.addEventListener('input', debounce(updateProjectFromUIAndPreview, 200)));
-    textEffectSelect.addEventListener('change', updateProjectFromUIAndPreview);
+
+    if(fontSelect) fontSelect.addEventListener('change', updateProjectFromUIAndPreview);
+    if(fontSizeSlider) {
+        fontSizeSlider.addEventListener('input', () => {
+            if(fontSizeValue) fontSizeValue.textContent = `${fontSizeSlider.value}px`;
+            updateProjectFromUIAndPreview();
+        });
+    }
+    [fontColorPicker, ayahBgColorPicker].forEach(el => {
+        if(el) el.addEventListener('input', debounce(updateProjectFromUIAndPreview, 200))
+    });
+    if(textEffectSelect) textEffectSelect.addEventListener('change', updateProjectFromUIAndPreview);
     
-    importBackground.addEventListener('change', handleBackgroundImport);
-    applyAiBgBtn.addEventListener('click', fetchAiBackgroundSuggestions);
+    if(importBackground) importBackground.addEventListener('change', handleBackgroundImport);
+    if(applyAiBgBtn) applyAiBgBtn.addEventListener('click', fetchAiBackgroundSuggestions);
     
-    delayBetweenAyahsInput.addEventListener('change', updateProjectFromUIAndPreview);
-    resolutionSelect.addEventListener('change', () => {
-        updateProjectFromUIAndPreview();
-        const [width, height] = currentProject.resolution.split('x').map(Number);
-        canvas.width = width;
-        canvas.height = height;
-        updatePreview(); // Re-render with new resolution
-    });
-    transitionSelect.addEventListener('change', updateProjectFromUIAndPreview);
-    exportBtn.addEventListener('click', exportVideo);
+    if(delayBetweenAyahsInput) delayBetweenAyahsInput.addEventListener('change', updateProjectFromUIAndPreview);
+    if(resolutionSelect) {
+        resolutionSelect.addEventListener('change', () => {
+            updateProjectFromUIAndPreview();
+            const [width, height] = currentProject.resolution.split('x').map(Number);
+            if(canvas) {
+                canvas.width = width;
+                canvas.height = height;
+            }
+            updatePreview(); 
+        });
+    }
+    if(transitionSelect) transitionSelect.addEventListener('change', updateProjectFromUIAndPreview);
+    if(exportBtn) exportBtn.addEventListener('click', exportVideo);
 
-    saveProjectBtn.addEventListener('click', saveProject);
+    if(saveProjectBtn) saveProjectBtn.addEventListener('click', saveProject);
 
     // Toolbar tabs
     document.querySelectorAll('.toolbar-tab-button').forEach(button => {
@@ -183,36 +207,77 @@ document.addEventListener('DOMContentLoaded', () => {
         
         button.parentElement.classList.add('active');
         const targetId = button.dataset.target;
-        document.getElementById(targetId).style.display = 'grid'; // Or 'flex' if preferred
+        const targetControls = document.getElementById(targetId);
+        if(targetControls) targetControls.style.display = 'grid'; 
       });
     });
-     // Activate first tab by default
-    document.querySelector('.toolbar-tab-button[data-target="quran-controls"]').click();
+    
+    const firstTabToActivate = document.querySelector('.toolbar-tab-button[data-target="quran-controls"]');
+    if (firstTabToActivate) {
+        firstTabToActivate.click();
+    } else {
+        console.warn("Could not find the first tab button (quran-controls) to activate by default.");
+    }
 
-    playPauseAudioPreviewBtn.addEventListener('click', toggleAudioPreview);
-    stopAudioPreviewBtn.addEventListener('click', stopAudioPreview);
-    ayahAudioPlayer.addEventListener('ended', handleAudioAyahEnded);
-    ayahAudioPlayer.addEventListener('error', handleAudioError);
-
+    if(playPauseAudioPreviewBtn) playPauseAudioPreviewBtn.addEventListener('click', toggleAudioPreview);
+    if(stopAudioPreviewBtn) stopAudioPreviewBtn.addEventListener('click', stopAudioPreview);
+    if(ayahAudioPlayer) {
+        ayahAudioPlayer.addEventListener('ended', handleAudioAyahEnded);
+        ayahAudioPlayer.addEventListener('error', handleAudioError);
+    }
   }
 
   // --- Screen Navigation ---
   function showScreen(screenName) {
-    initialScreen.style.display = screenName === 'initial' ? 'flex' : 'none';
-    editorScreen.style.display = screenName === 'editor' ? 'flex' : 'none';
-    if (screenName === 'editor' && !loadedProjectId) {
-        currentProjectTitleElement.textContent = "مشروع جديد";
+    if (!initialScreen || !editorScreen) {
+      console.error("Initial or Editor screen element not found in showScreen!");
+      return;
+    }
+
+    initialScreen.style.display = (screenName === 'initial') ? 'flex' : 'none';
+    editorScreen.style.display = (screenName === 'editor') ? 'flex' : 'none';
+    
+    if (screenName === 'editor') {
+      if (currentProjectTitleElement && currentProject) {
+          currentProjectTitleElement.textContent = currentProject.name || "مشروع جديد";
+      }
+
+      let activeTabFound = false;
+      document.querySelectorAll('.toolbar-section.active').forEach(section => {
+          activeTabFound = true;
+          const activeControlsId = section.querySelector('.toolbar-tab-button').dataset.target;
+          const activeControlsPanel = document.getElementById(activeControlsId);
+          if (activeControlsPanel && activeControlsPanel.style.display === 'none') {
+              activeControlsPanel.style.display = 'grid';
+          }
+      });
+
+      if (!activeTabFound) {
+        const quranControlsTabButton = document.querySelector('.toolbar-tab-button[data-target="quran-controls"]');
+        if (quranControlsTabButton) {
+          quranControlsTabButton.click(); 
+        } else {
+            console.warn("Quran controls tab button not found to activate as default in editor.")
+        }
+      }
+
+    } else if (screenName === 'initial') {
+      if(projectsList) loadProjects();
     }
   }
   
   function resetToNewProject() {
     currentProject = createNewProjectState();
     loadedProjectId = null;
-    updateUIFromProject();
-    setDefaultCanvas(); // Reset canvas to default state
-    backgroundImage = null; // Clear background image/video
+    updateUIFromProject(); // هذا سيقوم بتحديث كل عناصر الواجهة لتعكس المشروع الجديد
+    setDefaultCanvas(); 
+    backgroundImage = null; 
+    if (currentProjectTitleElement) {
+        currentProjectTitleElement.textContent = "مشروع جديد";
+    }
+    // تأكد من أن اقتراحات الخلفيات فارغة عند إنشاء مشروع جديد
+    if (aiBgSuggestionsDiv) aiBgSuggestionsDiv.innerHTML = ''; 
     updatePreview();
-    currentProjectTitleElement.textContent = "مشروع جديد";
   }
 
   // --- Theme Management ---
@@ -227,12 +292,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.className = newTheme;
     localStorage.setItem('quranVideoTheme', newTheme);
     updateThemeButtonText(newTheme);
-    updatePreview(); // Re-render with new theme colors potentially
+    updatePreview(); 
   }
   
   function updateThemeButtonText(theme) {
-    const text = theme === 'light-theme' ? ' darkMode 🌙' : ' lightMode ☀️';
-    [themeToggleInitial, themeToggleEditor].forEach(btn => btn.textContent = text.includes('🌙') ? '🌙' : '☀️');
+    const themeIcon = theme === 'light-theme' ? '🌙' : '☀️';
+    [themeToggleInitial, themeToggleEditor].forEach(btn => {
+        if(btn) btn.textContent = themeIcon;
+    });
   }
 
   // --- API Fetching ---
@@ -248,17 +315,16 @@ document.addEventListener('DOMContentLoaded', () => {
       recitersData = recitersRes.data.data;
       translationsData = translationsRes.data.data;
 
-      populateSelect(surahSelect, surahsData, 'number', 'name', 'اختر سورة');
-      populateSelect(reciterSelect, recitersData, 'identifier', 'englishName', 'اختر قارئ');
-      populateSelect(translationSelect, translationsData, 'identifier', 'englishName', 'بدون ترجمة', true);
+      if(surahSelect) populateSelect(surahSelect, surahsData, 'number', 'name', 'اختر سورة');
+      if(reciterSelect) populateSelect(reciterSelect, recitersData, 'identifier', 'englishName', 'اختر قارئ');
+      if(translationSelect) populateSelect(translationSelect, translationsData, 'identifier', 'englishName', 'بدون ترجمة', true);
       
-      // Set initial values from currentProject (could be default or loaded)
-      surahSelect.value = currentProject.surah;
-      await handleSurahChange(); // This will populate Ayah selects and trigger UI update
-      reciterSelect.value = currentProject.reciter;
-      translationSelect.value = currentProject.translation;
+      if(surahSelect && currentProject) surahSelect.value = currentProject.surah;
+      await handleSurahChange(); 
+      if(reciterSelect && currentProject) reciterSelect.value = currentProject.reciter;
+      if(translationSelect && currentProject) translationSelect.value = currentProject.translation;
 
-      updateUIFromProject(); // Ensure rest of UI matches project state
+      updateUIFromProject(); 
       
     } catch (error) {
       console.error("Error fetching initial data:", error);
@@ -269,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function handleSurahChange() {
+    if (!surahSelect || !currentProject) return;
     showLoading();
     currentProject.surah = surahSelect.value;
     const selectedSurah = surahsData.find(s => s.number == currentProject.surah);
@@ -278,21 +345,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-        // Fetch the full surah data to get number of ayahs
         const surahDetailRes = await axios.get(`${QURAN_API_BASE}/surah/${currentProject.surah}`);
         const numberOfAyahs = surahDetailRes.data.data.numberOfAyahs;
 
         const ayahs = Array.from({ length: numberOfAyahs }, (_, i) => ({ id: i + 1, name: `آية ${i + 1}` }));
-        populateSelect(ayahStartSelect, ayahs, 'id', 'name');
-        populateSelect(ayahEndSelect, ayahs, 'id', 'name');
+        if(ayahStartSelect) populateSelect(ayahStartSelect, ayahs, 'id', 'name');
+        if(ayahEndSelect) populateSelect(ayahEndSelect, ayahs, 'id', 'name');
 
-        // Auto-adjust Ayah range if needed
         if (parseInt(currentProject.ayahStart) > numberOfAyahs) currentProject.ayahStart = '1';
         if (parseInt(currentProject.ayahEnd) > numberOfAyahs) currentProject.ayahEnd = String(numberOfAyahs);
         if (parseInt(currentProject.ayahStart) > parseInt(currentProject.ayahEnd)) currentProject.ayahEnd = currentProject.ayahStart;
         
-        ayahStartSelect.value = currentProject.ayahStart;
-        ayahEndSelect.value = currentProject.ayahEnd;
+        if(ayahStartSelect) ayahStartSelect.value = currentProject.ayahStart;
+        if(ayahEndSelect) ayahEndSelect.value = currentProject.ayahEnd;
 
         updateProjectFromUIAndPreview();
     } catch (error) {
@@ -304,12 +369,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function handleAyahRangeChange() {
+    if (!ayahStartSelect || !ayahEndSelect) return;
     let start = parseInt(ayahStartSelect.value);
     let end = parseInt(ayahEndSelect.value);
     if (start > end) {
-        if (this.id === 'ayah-start-select') { // If start ayah changed and became > end
+        if (this.id === 'ayah-start-select') { 
             ayahEndSelect.value = start;
-        } else { // If end ayah changed and became < start
+        } else { 
             ayahStartSelect.value = end;
         }
     }
@@ -317,16 +383,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function populateSelect(selectElement, data, valueKey, textKey, defaultOptionText = null, addNoneOption = false) {
+    if (!selectElement) return;
     selectElement.innerHTML = '';
     if (defaultOptionText) {
       const defaultOpt = document.createElement('option');
       defaultOpt.value = '';
       defaultOpt.textContent = defaultOptionText;
-      if (addNoneOption && defaultOptionText === "بدون ترجمة") defaultOpt.value = ""; // Specific for translation
+      if (addNoneOption && defaultOptionText === "بدون ترجمة") defaultOpt.value = ""; 
       else if (addNoneOption) defaultOpt.value = "none";
       selectElement.appendChild(defaultOpt);
     }
-    if (addNoneOption && !defaultOptionText) { // If explicit none option without a default placeholder like "اختر..."
+    if (addNoneOption && !defaultOptionText) { 
         const noneOpt = document.createElement('option');
         noneOpt.value = '';
         noneOpt.textContent = 'بدون';
@@ -342,52 +409,50 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // --- Project State & UI Sync ---
   function updateProjectFromUI() {
-    currentProject.surah = surahSelect.value;
-    currentProject.ayahStart = ayahStartSelect.value;
-    currentProject.ayahEnd = ayahEndSelect.value;
-    currentProject.reciter = reciterSelect.value;
-    currentProject.translation = translationSelect.value;
-    currentProject.font = fontSelect.value;
-    currentProject.fontSize = parseInt(fontSizeSlider.value);
-    currentProject.fontColor = fontColorPicker.value;
-    currentProject.ayahBgColor = ayahBgColorPicker.value;
-    currentProject.textEffect = textEffectSelect.value;
-    currentProject.delayBetweenAyahs = parseFloat(delayBetweenAyahsInput.value);
-    currentProject.resolution = resolutionSelect.value;
-    currentProject.transition = transitionSelect.value;
+    if(!currentProject) currentProject = createNewProjectState(); // Safety check
+
+    if(surahSelect) currentProject.surah = surahSelect.value;
+    if(ayahStartSelect) currentProject.ayahStart = ayahStartSelect.value;
+    if(ayahEndSelect) currentProject.ayahEnd = ayahEndSelect.value;
+    if(reciterSelect) currentProject.reciter = reciterSelect.value;
+    if(translationSelect) currentProject.translation = translationSelect.value;
+    if(fontSelect) currentProject.font = fontSelect.value;
+    if(fontSizeSlider) currentProject.fontSize = parseInt(fontSizeSlider.value);
+    if(fontColorPicker) currentProject.fontColor = fontColorPicker.value;
+    if(ayahBgColorPicker) currentProject.ayahBgColor = ayahBgColorPicker.value;
+    if(textEffectSelect) currentProject.textEffect = textEffectSelect.value;
+    if(delayBetweenAyahsInput) currentProject.delayBetweenAyahs = parseFloat(delayBetweenAyahsInput.value);
+    if(resolutionSelect) currentProject.resolution = resolutionSelect.value;
+    if(transitionSelect) currentProject.transition = transitionSelect.value;
     currentProject.lastModified = Date.now();
   }
 
   function updateUIFromProject() {
-    surahSelect.value = currentProject.surah;
-    // Ayah selects are populated dynamically, ensure values are set after population
-    // This will be handled by handleSurahChange and then setting values
+    if(!currentProject) return;
+
+    if(surahSelect) surahSelect.value = currentProject.surah;    
+    if(reciterSelect) reciterSelect.value = currentProject.reciter;
+    if(translationSelect) translationSelect.value = currentProject.translation;
+    if(fontSelect) fontSelect.value = currentProject.font;
+    if(fontSizeSlider) fontSizeSlider.value = currentProject.fontSize;
+    if(fontSizeValue) fontSizeValue.textContent = `${currentProject.fontSize}px`;
+    if(fontColorPicker) fontColorPicker.value = currentProject.fontColor;
     
-    reciterSelect.value = currentProject.reciter;
-    translationSelect.value = currentProject.translation;
-    fontSelect.value = currentProject.font;
-    fontSizeSlider.value = currentProject.fontSize;
-    fontSizeValue.textContent = `${currentProject.fontSize}px`;
-    fontColorPicker.value = currentProject.fontColor;
-    ayahBgColorPicker.value = currentProject.ayahBgColor; // Needs to handle potential TinyColor object
-    
-    // Ensure ayahBgColorPicker.value is a hex string if it's a TinyColor object
-    try {
-        let color = tinycolor(currentProject.ayahBgColor);
-        ayahBgColorPicker.value = color.toRgbString(); // Or toHexString() if alpha is not needed
-    } catch (e) {
-        ayahBgColorPicker.value = 'rgba(0,0,0,0.3)'; // Default fallback
+    if(ayahBgColorPicker) {
+        try {
+            let color = tinycolor(currentProject.ayahBgColor);
+            ayahBgColorPicker.value = color.toRgbString(); 
+        } catch (e) {
+            ayahBgColorPicker.value = 'rgba(0,0,0,0.3)'; 
+        }
     }
 
+    if(textEffectSelect) textEffectSelect.value = currentProject.textEffect;
+    if(delayBetweenAyahsInput) delayBetweenAyahsInput.value = currentProject.delayBetweenAyahs;
+    if(resolutionSelect) resolutionSelect.value = currentProject.resolution;
+    if(transitionSelect) transitionSelect.value = currentProject.transition;
+    if(currentProjectTitleElement) currentProjectTitleElement.textContent = currentProject.name || "مشروع جديد";
 
-    textEffectSelect.value = currentProject.textEffect;
-    delayBetweenAyahsInput.value = currentProject.delayBetweenAyahs;
-    resolutionSelect.value = currentProject.resolution;
-    transitionSelect.value = currentProject.transition;
-    currentProjectTitleElement.textContent = currentProject.name || "مشروع جديد";
-
-
-    // Load background if it exists
     if (currentProject.background) {
         if (currentProject.backgroundType === 'image' || currentProject.backgroundType === 'pexels') {
             const img = new Image();
@@ -411,6 +476,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         backgroundImage = null;
+    }
+    // Ensure Ayah selects are correctly set if surah has changed during load.
+    // This is typically handled by fetchInitialData -> handleSurahChange -> updateUIFromProject.
+    // But if project is loaded directly, ensure ayahs are populated and selected.
+    if (ayahStartSelect && currentProject.surah && currentProject.ayahStart) { // Check if ayahs need re-populating
+        const selectedSurahDetails = surahsData.find(s => s.number == currentProject.surah);
+        if (selectedSurahDetails && ayahStartSelect.options.length <= 1) { // Options not populated yet or only default
+             const ayahs = Array.from({ length: selectedSurahDetails.numberOfAyahs }, (_, i) => ({ id: i + 1, name: `آية ${i + 1}` }));
+             populateSelect(ayahStartSelect, ayahs, 'id', 'name');
+             populateSelect(ayahEndSelect, ayahs, 'id', 'name');
+        }
+        ayahStartSelect.value = currentProject.ayahStart;
+    }
+    if (ayahEndSelect && currentProject.ayahEnd) {
+        ayahEndSelect.value = currentProject.ayahEnd;
     }
   }
   
@@ -459,15 +539,19 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("يرجى إضافة مفتاح Pexels API في ملف script.js لتفعيل هذه الميزة.");
         return;
     }
+    if (!currentProject || !surahSelect) {
+        alert("لم يتم تهيئة المشروع أو قائمة السور بشكل صحيح.");
+        return;
+    }
     const selectedSurah = surahsData.find(s => s.number == currentProject.surah);
     if (!selectedSurah) {
       alert("يرجى اختيار سورة أولاً.");
       return;
     }
-    const query = selectedSurah.englishName.replace("Al-", "").replace("Surat ", "").trim(); // Simple query from Surah name
+    const query = selectedSurah.englishName.replace("Al-", "").replace("Surat ", "").trim(); 
     
-    aiBgSuggestionsDiv.innerHTML = '';
-    aiBgSuggestionsLoader.style.display = 'block';
+    if(aiBgSuggestionsDiv) aiBgSuggestionsDiv.innerHTML = '';
+    if(aiBgSuggestionsLoader) aiBgSuggestionsLoader.style.display = 'block';
     showLoading();
 
     try {
@@ -476,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params: { query: query, per_page: 5, orientation: 'landscape' }
       });
       
-      if (response.data.photos.length === 0) {
+      if (response.data.photos.length === 0 && aiBgSuggestionsDiv) {
           aiBgSuggestionsDiv.innerHTML = '<p>لم يتم العثور على خلفيات مقترحة.</p>';
           return;
       }
@@ -487,26 +571,25 @@ document.addEventListener('DOMContentLoaded', () => {
         img.alt = photo.alt || `Background for ${query}`;
         img.title = photo.alt || `Background for ${query}`;
         img.addEventListener('click', () => {
-          // Remove selection from other AI images
           document.querySelectorAll('#ai-bg-suggestions img.selected-ai-bg').forEach(el => el.classList.remove('selected-ai-bg'));
           img.classList.add('selected-ai-bg');
 
           const bgImg = new Image();
-          bgImg.crossOrigin = "anonymous"; // Important for Pexels
+          bgImg.crossOrigin = "anonymous"; 
           bgImg.onload = () => {
             backgroundImage = bgImg;
-            currentProject.background = photo.src.large2x; // Store high-res for actual use
+            currentProject.background = photo.src.large2x; 
             currentProject.backgroundType = 'pexels';
             updatePreview();
           };
           bgImg.onerror = () => alert("خطأ في تحميل الصورة المقترحة.");
-          bgImg.src = photo.src.large2x; // Use a larger version for the canvas
+          bgImg.src = photo.src.large2x; 
         });
-        aiBgSuggestionsDiv.appendChild(img);
+        if(aiBgSuggestionsDiv) aiBgSuggestionsDiv.appendChild(img);
       });
     } catch (error) {
       console.error("Error fetching Pexels suggestions:", error);
-      aiBgSuggestionsDiv.innerHTML = '<p>خطأ في جلب الاقتراحات. تحقق من مفتاح API.</p>';
+      if(aiBgSuggestionsDiv) aiBgSuggestionsDiv.innerHTML = '<p>خطأ في جلب الاقتراحات. تحقق من مفتاح API.</p>';
       if (error.response && error.response.status === 401) {
         alert("خطأ في المصادقة مع Pexels. يرجى التحقق من مفتاح API الخاص بك.");
       } else {
@@ -514,140 +597,132 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } finally {
       hideLoading();
-      aiBgSuggestionsLoader.style.display = 'none';
+      if(aiBgSuggestionsLoader) aiBgSuggestionsLoader.style.display = 'none';
     }
   }
 
   // --- Canvas Drawing ---
-  function updatePreview(ayahOverride = null, translationOverride = null, surahTitleOverride = null) {
-    if (isRendering) return;
+  async function updatePreview(ayahOverride = null, translationOverride = null, surahTitleOverride = null) {
+    if (isRendering || !ctx || !canvas) return;
     isRendering = true;
 
-    requestAnimationFrame(async () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Wrapped in requestAnimationFrame for smoother rendering
+    return new Promise(resolve => {
+        requestAnimationFrame(async () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Draw Background
-        if (backgroundImage) {
-            if (backgroundImage.tagName === 'VIDEO') {
-                if (backgroundVideoIsPlaying && backgroundImage.readyState >= HTMLMediaElement.HAVE_ wystarczająco_DANYCH) { // HAVE_CURRENT_DATA or more
-                    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                } else {
-                    // Fallback if video not playing or not ready
-                    ctx.fillStyle = '#333333';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.textAlign = 'center';
-                    ctx.fillText("جاري تحميل الفيديو...", canvas.width / 2, canvas.height / 2);
-                }
-            } else { // Image
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            }
-        } else {
-            ctx.fillStyle = '#000000'; // Default black background
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // 2. Prepare text (can be from project state or overridden for audio preview)
-        const selectedSurah = surahsData.find(s => s.number == currentProject.surah);
-        let currentSurahTitle = surahTitleOverride || (selectedSurah ? selectedSurah.name : "اختر سورة");
-        let currentAyahText = ayahOverride || "بسم الله الرحمن الرحيم";
-        let currentTranslationText = translationOverride || "";
-
-        if (!ayahOverride && !translationOverride && !surahTitleOverride) { // Normal preview update (not audio-driven)
-            if (selectedSurah && currentProject.ayahStart) {
-                // For normal preview, we might want to show the first Ayah of the range
-                // Or simply a placeholder if no data is fetched yet.
-                // For now, let's assume data for a single Ayah will be fetched if needed for display.
-                // This part might need refinement if we want to display *all* ayahs of the range
-                // concatenated, or just the first one. Let's keep it simple for now.
-                 try {
-                    const ayahNumGlobal = getGlobalAyahNumber(parseInt(currentProject.surah), parseInt(currentProject.ayahStart));
-                    if (ayahNumGlobal) {
-                        const response = await axios.get(`${QURAN_API_BASE}/ayah/${ayahNumGlobal}/${currentProject.reciter}`);
-                        currentAyahText = response.data.data.text;
-                        if (currentProject.translation) {
-                            const transResponse = await axios.get(`${QURAN_API_BASE}/ayah/${ayahNumGlobal}/${currentProject.translation}`);
-                            currentTranslationText = transResponse.data.data.text;
-                        }
+            if (backgroundImage) {
+                if (backgroundImage.tagName === 'VIDEO') {
+                    if (backgroundVideoIsPlaying && backgroundImage.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) { 
+                        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                    } else {
+                        ctx.fillStyle = '#333333';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.textAlign = 'center';
+                        if (canvas.width > 0) ctx.fillText("جاري تحميل الفيديو...", canvas.width / 2, canvas.height / 2);
                     }
-                } catch (e) {
-                    console.warn("Could not fetch specific ayah for preview text:", e);
+                } else { 
+                    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                }
+            } else {
+                ctx.fillStyle = '#000000'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            const selectedSurah = surahsData.find(s => s.number == currentProject.surah);
+            let currentSurahTitle = surahTitleOverride || (selectedSurah ? selectedSurah.name : (currentProject.surah ? `سورة ${currentProject.surah}`: "اختر سورة"));
+            let currentAyahText = ayahOverride || "بسم الله الرحمن الرحيم";
+            let currentTranslationText = translationOverride || "";
+
+            if (!ayahOverride && !translationOverride && !surahTitleOverride) { 
+                if (selectedSurah && currentProject.ayahStart && currentProject.reciter) {
+                     try {
+                        const ayahNumGlobal = getGlobalAyahNumber(parseInt(currentProject.surah), parseInt(currentProject.ayahStart));
+                        if (ayahNumGlobal) {
+                            const response = await axios.get(`${QURAN_API_BASE}/ayah/${ayahNumGlobal}/${currentProject.reciter}`);
+                            currentAyahText = response.data.data.text;
+                            if (currentProject.translation) {
+                                const transResponse = await axios.get(`${QURAN_API_BASE}/ayah/${ayahNumGlobal}/${currentProject.translation}`);
+                                currentTranslationText = transResponse.data.data.text;
+                            }
+                        }
+                    } catch (e) {
+                        console.warn("Could not fetch specific ayah for preview text:", e.message);
+                        currentAyahText = "خطأ في تحميل الآية";
+                    }
                 }
             }
-        }
-        
-        // Update HTML overlay (for reference, not for export)
-        previewSurahTitle.textContent = currentSurahTitle;
-        previewAyahText.textContent = currentAyahText;
-        previewTranslationText.textContent = currentTranslationText;
-        
-        // 3. Draw Surah Title on Canvas
-        const titleFontSize = Math.min(canvas.width / 20, canvas.height / 15);
-        ctx.font = `bold ${titleFontSize}px ${currentProject.font}`; // Use selected font for title too or a UI font
-        ctx.fillStyle = currentProject.fontColor; // Use main font color for title or a dedicated one
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top'; // Anchor from top for easier Y positioning
-        const titleYPosition = canvas.height * 0.1;
-        drawTextWithShadow(currentSurahTitle, canvas.width / 2, titleYPosition, currentProject.fontColor);
+            
+            if(previewSurahTitle) previewSurahTitle.textContent = currentSurahTitle;
+            if(previewAyahText) previewAyahText.textContent = currentAyahText;
+            if(previewTranslationText) previewTranslationText.textContent = currentTranslationText;
+            
+            const titleFontSize = Math.min(canvas.width / 20, canvas.height / 15);
+            ctx.font = `bold ${titleFontSize}px ${currentProject.font || "'Amiri Quran', serif"}`; 
+            ctx.fillStyle = currentProject.fontColor || '#FFFFFF'; 
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top'; 
+            const titleYPosition = canvas.height * 0.1;
+            if (canvas.width > 0) drawTextWithShadow(currentSurahTitle, canvas.width / 2, titleYPosition, currentProject.fontColor || '#FFFFFF');
 
-
-        // 4. Draw Ayah Text on Canvas
-        const ayahFontSize = currentProject.fontSize * (canvas.width / 1280); // Scale font size with canvas width
-        ctx.font = `${ayahFontSize}px ${currentProject.font}`;
-        ctx.fillStyle = currentProject.fontColor;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        const ayahTextX = canvas.width / 2;
-        const ayahTextY = canvas.height / 2; // Center Ayah text vertically
-        const maxTextWidth = canvas.width * 0.85; // Max width for text block
-        
-        // Apply Ayah background color
-        if (tinycolor(currentProject.ayahBgColor).getAlpha() > 0) {
-            const lines = wrapText(currentAyahText, maxTextWidth, ctx);
-            if (lines.length > 0) {
-                const textMetrics = ctx.measureText(lines[0]); // Use first line for typical height
-                const lineHeight = (textMetrics.actualBoundingBoxAscent || ayahFontSize) + (textMetrics.actualBoundingBoxDescent || ayahFontSize * 0.2);
-                const totalTextHeight = lineHeight * lines.length;
-                const padding = ayahFontSize * 0.2; // Padding around text
-                
-                ctx.fillStyle = currentProject.ayahBgColor;
-                ctx.fillRect(
-                    (canvas.width - maxTextWidth) / 2 - padding, 
-                    ayahTextY - totalTextHeight / 2 - padding,
-                    maxTextWidth + padding * 2,
-                    totalTextHeight + padding * 2
-                );
+            const ayahFontSize = (currentProject.fontSize || 48) * (canvas.width > 0 ? (canvas.width / 1280) : 1); 
+            ctx.font = `${ayahFontSize}px ${currentProject.font || "'Amiri Quran', serif"}`;
+            ctx.fillStyle = currentProject.fontColor || '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            const ayahTextX = canvas.width / 2;
+            const ayahTextY = canvas.height / 2; 
+            const maxTextWidth = canvas.width * 0.85; 
+            
+            const ayahBg = currentProject.ayahBgColor || 'rgba(0,0,0,0.3)';
+            if (tinycolor(ayahBg).getAlpha() > 0) {
+                const lines = wrapText(currentAyahText, maxTextWidth, ctx);
+                if (lines.length > 0) {
+                    const textMetrics = ctx.measureText(lines[0]); 
+                    const lineHeight = (textMetrics.actualBoundingBoxAscent || ayahFontSize) + (textMetrics.actualBoundingBoxDescent || ayahFontSize * 0.2);
+                    const totalTextHeight = lineHeight * lines.length;
+                    const padding = ayahFontSize * 0.2; 
+                    
+                    ctx.fillStyle = ayahBg;
+                    if (canvas.width > 0) {
+                        ctx.fillRect(
+                            (canvas.width - maxTextWidth) / 2 - padding, 
+                            ayahTextY - totalTextHeight / 2 - padding,
+                            maxTextWidth + padding * 2,
+                            totalTextHeight + padding * 2
+                        );
+                    }
+                }
             }
-        }
-        
-        // Draw actual Ayah text
-        drawTextWithEffect(currentAyahText, ayahTextX, ayahTextY, maxTextWidth, currentProject.fontColor, currentProject.textEffect);
+            
+            if (canvas.width > 0) drawTextWithEffect(currentAyahText, ayahTextX, ayahTextY, maxTextWidth, currentProject.fontColor || '#FFFFFF', currentProject.textEffect || 'none');
 
-
-        // 5. Draw Translation Text on Canvas (if any)
-        if (currentTranslationText) {
-          const translationFontSize = Math.max(18, ayahFontSize * 0.4) * (canvas.width / 1280);
-          ctx.font = `${translationFontSize}px ${currentProject.font}`; // Or a dedicated translation font
-          ctx.fillStyle = tinycolor(currentProject.fontColor).lighten(20).toString(); // Lighter color for translation
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'bottom'; // Anchor from bottom for easier Y positioning
-          const translationYPosition = canvas.height * 0.9; // Position towards bottom
-          const maxTranslationWidth = canvas.width * 0.8;
-          drawTextWithEffect(currentTranslationText, canvas.width / 2, translationYPosition, maxTranslationWidth, ctx.fillStyle, 'none'); // No effect for translation usually
-        }
-        isRendering = false;
+            if (currentTranslationText) {
+              const translationFontSize = Math.max(18, ayahFontSize * 0.4) * (canvas.width > 0 ? (canvas.width / 1280) : 1);
+              ctx.font = `${translationFontSize}px ${currentProject.font || "'Tajawal', sans-serif"}`; 
+              ctx.fillStyle = tinycolor(currentProject.fontColor || '#FFFFFF').lighten(20).toString(); 
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom'; 
+              const translationYPosition = canvas.height * 0.9; 
+              const maxTranslationWidth = canvas.width * 0.8;
+              if (canvas.width > 0) drawTextWithEffect(currentTranslationText, canvas.width / 2, translationYPosition, maxTranslationWidth, ctx.fillStyle, 'none'); 
+            }
+            isRendering = false;
+            resolve(); // Resolve the promise after rendering is complete
+        });
     });
   }
   
   function drawTextWithShadow(text, x, y, color, shadowColor = 'rgba(0,0,0,0.7)', shadowBlur = 5, shadowOffsetX = 2, shadowOffsetY = 2) {
+      if (!ctx || !text) return;
       ctx.shadowColor = shadowColor;
       ctx.shadowBlur = shadowBlur;
       ctx.shadowOffsetX = shadowOffsetX;
       ctx.shadowOffsetY = shadowOffsetY;
       ctx.fillStyle = color;
       ctx.fillText(text, x, y);
-      // Reset shadow
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
@@ -655,40 +730,48 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawTextWithEffect(text, x, y, maxWidth, color, effect) {
-    ctx.fillStyle = color; // Set fillStyle before measuring or drawing
+    if (!ctx || !text) return;
+    ctx.fillStyle = color; 
     const lines = wrapText(text, maxWidth, ctx);
-    const lineHeight = parseFloat(ctx.font.match(/(\d+)px/)[1]) * 1.5; // Approximate line height
+    const fontMatch = ctx.font.match(/(\d+)px/);
+    const currentFontSize = fontMatch ? parseFloat(fontMatch[1]) : 20; // Default if not found
+    const lineHeight = currentFontSize * 1.5; 
     const totalTextHeight = lines.length * lineHeight;
-    let startY = y - totalTextHeight / 2 + lineHeight / 2; // Adjust startY to center block
+    let startY = y - totalTextHeight / 2 + lineHeight / 2; 
 
     lines.forEach((line, index) => {
       const lineY = startY + index * lineHeight;
-      if (effect === 'typewriter') {
-        // Simple typewriter: draw all at once, but could be animated char by char in export
-        drawTextWithShadow(line, x, lineY, color);
-      } else if (effect === 'fade') {
-        // Simple fade: draw all at once, could be animated in export
-         drawTextWithShadow(line, x, lineY, color);
-      } else { // none
-         drawTextWithShadow(line, x, lineY, color);
-      }
+      drawTextWithShadow(line, x, lineY, color); // Effects like typewriter/fade handled during export for now
     });
   }
 
   function wrapText(text, maxWidth, context) {
-    if (!text) return [];
-    const words = text.split(' ');
+    if (!text || !context || maxWidth <=0) return [];
+    // Ensure font is set on context before measuring
+    if (!context.font) context.font = "20px sans-serif"; // Default if not set
+
+    const words = String(text).split(' '); // Ensure text is a string
     const lines = [];
-    let currentLine = words[0];
+    if (words.length === 0) return [];
+    let currentLine = words[0] || "";
 
     for (let i = 1; i < words.length; i++) {
       const word = words[i];
-      const width = context.measureText(currentLine + " " + word).width;
-      if (width < maxWidth) {
-        currentLine += " " + word;
-      } else {
-        lines.push(currentLine);
-        currentLine = word;
+      if (!word) continue; // Skip empty strings if any
+      const testLine = currentLine + " " + word;
+      try {
+          const width = context.measureText(testLine).width;
+          if (width < maxWidth) {
+            currentLine = testLine;
+          } else {
+            lines.push(currentLine);
+            currentLine = word;
+          }
+      } catch (e) {
+          console.error("Error measuring text in wrapText. Current font:", context.font, "Text:", testLine, e);
+          // Fallback: push current line and word, or handle error differently
+          lines.push(currentLine);
+          currentLine = word;
       }
     }
     lines.push(currentLine);
@@ -696,22 +779,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function getGlobalAyahNumber(surahNumber, ayahInSurah) {
-    if (!surahsData || surahsData.length === 0) return null; // Ensure surahsData is loaded
+    if (!surahsData || surahsData.length === 0) return null; 
     let globalNumber = 0;
     for (let i = 0; i < surahNumber - 1; i++) {
-        if (surahsData[i]) { // Check if surah data exists at this index
+        if (surahsData[i]) { 
             globalNumber += surahsData[i].numberOfAyahs;
         } else {
             console.warn(`Surah data for index ${i} (Surah ${i+1}) not found.`);
-            // Decide how to handle this: return null, or skip, or throw error
-            // For now, let's assume this might happen if surahsData isn't fully populated yet
-            // or if surahNumber is out of expected bounds.
             return null; 
         }
     }
     return globalNumber + ayahInSurah;
   }
-
 
   // --- Audio Preview ---
   async function toggleAudioPreview() {
@@ -723,7 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function startAudioPreview() {
-    if (!currentProject.surah || !currentProject.ayahStart || !currentProject.ayahEnd || !currentProject.reciter) {
+    if (!currentProject || !currentProject.surah || !currentProject.ayahStart || !currentProject.ayahEnd || !currentProject.reciter) {
       alert("يرجى اختيار السورة ونطاق الآيات والقارئ أولاً.");
       return;
     }
@@ -744,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const ayahAudioUrl = `${QURAN_API_BASE}/ayah/${ayahGlobalNumber}/${currentProject.reciter}`;
-        const ayahTextUrl = `${QURAN_API_BASE}/ayah/${ayahGlobalNumber}/quran-uthmani`; // Always use Uthmani for text
+        const ayahTextUrl = `${QURAN_API_BASE}/ayah/${ayahGlobalNumber}/quran-uthmani`; 
         
         let translationText = "";
         if (currentProject.translation) {
@@ -774,8 +853,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (audioPreviewState.ayahsToPlay.length > 0) {
         audioPreviewState.currentAyahIndex = 0;
         audioPreviewState.isPlaying = true;
-        playPauseAudioPreviewBtn.innerHTML = '<i class="fas fa-pause-circle"></i> إيقاف مؤقت';
-        stopAudioPreviewBtn.style.display = 'inline-block';
+        if(playPauseAudioPreviewBtn) playPauseAudioPreviewBtn.innerHTML = '<i class="fas fa-pause-circle"></i> إيقاف مؤقت';
+        if(stopAudioPreviewBtn) stopAudioPreviewBtn.style.display = 'inline-block';
         playCurrentAyahAudio();
       } else {
         alert("لم يتم العثور على آيات لتشغيلها.");
@@ -792,53 +871,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function pauseAudioPreview() {
     audioPreviewState.isPlaying = false;
-    ayahAudioPlayer.pause();
-    playPauseAudioPreviewBtn.innerHTML = '<i class="fas fa-play-circle"></i> متابعة التلاوة';
+    if(ayahAudioPlayer) ayahAudioPlayer.pause();
+    if(playPauseAudioPreviewBtn) playPauseAudioPreviewBtn.innerHTML = '<i class="fas fa-play-circle"></i> متابعة التلاوة';
   }
 
   function stopAudioPreview() {
     audioPreviewState.isPlaying = false;
-    if(audioPreviewState.currentAudio) {
+    if(audioPreviewState.currentAudio) { // This was never used, ayahAudioPlayer is the one
         audioPreviewState.currentAudio.pause();
         audioPreviewState.currentAudio.currentTime = 0;
     }
-    ayahAudioPlayer.pause();
-    ayahAudioPlayer.src = ""; // Clear source
+    if(ayahAudioPlayer) {
+        ayahAudioPlayer.pause();
+        ayahAudioPlayer.src = ""; 
+    }
     audioPreviewState.currentAyahIndex = 0;
-    playPauseAudioPreviewBtn.innerHTML = '<i class="fas fa-play-circle"></i> تشغيل معاينة الصوت';
-    stopAudioPreviewBtn.style.display = 'none';
-    audioPreviewStatus.textContent = "";
-    updatePreview(); // Reset preview to default based on selections
+    if(playPauseAudioPreviewBtn) playPauseAudioPreviewBtn.innerHTML = '<i class="fas fa-play-circle"></i> تشغيل معاينة الصوت';
+    if(stopAudioPreviewBtn) stopAudioPreviewBtn.style.display = 'none';
+    if(audioPreviewStatus) audioPreviewStatus.textContent = "";
+    updatePreview(); 
   }
   
-  function playCurrentAyahAudio() {
+  async function playCurrentAyahAudio() {
     if (!audioPreviewState.isPlaying || audioPreviewState.currentAyahIndex >= audioPreviewState.ayahsToPlay.length) {
-      if (audioPreviewState.currentAyahIndex >= audioPreviewState.ayahsToPlay.length && audioPreviewState.ayahsToPlay.length > 0) { // Finished all ayahs
-          stopAudioPreview(); // Or some "finished" state
-          audioPreviewStatus.textContent = "انتهت التلاوة";
+      if (audioPreviewState.currentAyahIndex >= audioPreviewState.ayahsToPlay.length && audioPreviewState.ayahsToPlay.length > 0) { 
+          stopAudioPreview(); 
+          if(audioPreviewStatus) audioPreviewStatus.textContent = "انتهت التلاوة";
       }
       return;
     }
 
     const currentAyahData = audioPreviewState.ayahsToPlay[audioPreviewState.currentAyahIndex];
     
-    // Update visual preview
-    updatePreview(currentAyahData.text, currentAyahData.translation, `${currentAyahData.surahName} - آية ${currentAyahData.ayahInSurah}`);
+    await updatePreview(currentAyahData.text, currentAyahData.translation, `${currentAyahData.surahName} - آية ${currentAyahData.ayahInSurah}`);
     
-    audioPreviewStatus.textContent = `جاري تشغيل: ${currentAyahData.surahName} - آية ${currentAyahData.ayahInSurah} (${audioPreviewState.currentAyahIndex + 1}/${audioPreviewState.ayahsToPlay.length})`;
+    if(audioPreviewStatus) audioPreviewStatus.textContent = `جاري تشغيل: ${currentAyahData.surahName} - آية ${currentAyahData.ayahInSurah} (${audioPreviewState.currentAyahIndex + 1}/${audioPreviewState.ayahsToPlay.length})`;
     
-    ayahAudioPlayer.src = currentAyahData.audioUrl;
-    ayahAudioPlayer.play().catch(e => {
-        console.error("Error playing audio:", e);
-        alert("لا يمكن تشغيل الصوت. قد يتطلب الأمر تفاعلاً من المستخدم أولاً.");
-        stopAudioPreview();
-    });
+    if(ayahAudioPlayer) {
+        ayahAudioPlayer.src = currentAyahData.audioUrl;
+        ayahAudioPlayer.play().catch(e => {
+            console.error("Error playing audio:", e);
+            alert("لا يمكن تشغيل الصوت. قد يتطلب الأمر تفاعلاً من المستخدم أولاً.");
+            stopAudioPreview();
+        });
+    }
   }
 
   function handleAudioAyahEnded() {
     audioPreviewState.currentAyahIndex++;
     if (audioPreviewState.isPlaying) {
-      // Optional: add delay from currentProject.delayBetweenAyahs
       const delay = (currentProject.delayBetweenAyahs || 0.5) * 1000; 
       setTimeout(playCurrentAyahAudio, delay);
     }
@@ -846,42 +927,47 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function handleAudioError(e) {
       console.error("Audio player error:", e);
-      audioPreviewStatus.textContent = `خطأ في تشغيل الصوت للآية ${audioPreviewState.ayahsToPlay[audioPreviewState.currentAyahIndex]?.ayahInSurah}`;
-      // Optionally try to skip to next ayah or stop
-      // For now, let's just stop to avoid error loops
+      if(audioPreviewStatus && audioPreviewState.ayahsToPlay[audioPreviewState.currentAyahIndex]) {
+        audioPreviewStatus.textContent = `خطأ في تشغيل الصوت للآية ${audioPreviewState.ayahsToPlay[audioPreviewState.currentAyahIndex]?.ayahInSurah}`;
+      }
       stopAudioPreview();
       alert("حدث خطأ أثناء تشغيل الصوت. قد يكون الملف الصوتي غير متوفر أو هناك مشكلة في الشبكة.");
   }
 
   // --- Project Persistence (LocalStorage) ---
   function saveProject() {
+    if (!currentProject) {
+        alert("لا يوجد مشروع حالي لحفظه.");
+        return;
+    }
     const projectName = prompt("أدخل اسم المشروع:", currentProject.name || `مشروع ${new Date().toLocaleDateString()}`);
-    if (projectName === null) return; // User cancelled
+    if (projectName === null) return; 
 
     currentProject.name = projectName.trim() || `مشروع ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
-    updateProjectFromUI(); // Ensure latest UI changes are in currentProject object
+    updateProjectFromUI(); 
 
     let projects = JSON.parse(localStorage.getItem('quranVideoProjects')) || [];
     
-    if (loadedProjectId) { // Editing an existing project
+    if (loadedProjectId) { 
         const projectIndex = projects.findIndex(p => p.id === loadedProjectId);
         if (projectIndex > -1) {
-            projects[projectIndex] = { ...currentProject, id: loadedProjectId }; // Keep original ID
-        } else { // ID was set, but not found (edge case, treat as new)
-            projects.push(currentProject); // currentProject already has a unique ID
+            projects[projectIndex] = { ...currentProject, id: loadedProjectId }; 
+        } else { 
+            projects.push(currentProject); 
         }
-    } else { // New project
+    } else { 
         projects.push(currentProject);
     }
     
     localStorage.setItem('quranVideoProjects', JSON.stringify(projects));
     alert(`تم حفظ المشروع "${currentProject.name}"`);
-    loadedProjectId = currentProject.id; // Track that this project is now saved
-    currentProjectTitleElement.textContent = currentProject.name;
-    loadProjects(); // Refresh list on initial screen
+    loadedProjectId = currentProject.id; 
+    if(currentProjectTitleElement) currentProjectTitleElement.textContent = currentProject.name;
+    loadProjects(); 
   }
 
   function loadProjects() {
+    if (!projectsList || !noProjectsMessage) return;
     const projects = JSON.parse(localStorage.getItem('quranVideoProjects')) || [];
     projectsList.innerHTML = '';
     if (projects.length === 0) {
@@ -890,7 +976,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     noProjectsMessage.style.display = 'none';
     
-    projects.sort((a, b) => b.lastModified - a.lastModified); // Show newest first
+    projects.sort((a, b) => b.lastModified - a.lastModified); 
 
     projects.forEach(project => {
       const card = document.createElement('div');
@@ -925,36 +1011,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function loadSpecificProject(projectId) {
+  async function loadSpecificProject(projectId) {
     const projects = JSON.parse(localStorage.getItem('quranVideoProjects')) || [];
     const projectToLoad = projects.find(p => p.id === projectId);
     if (projectToLoad) {
-      currentProject = { ...createNewProjectState(), ...projectToLoad }; // Merge with defaults to ensure all keys exist
+      currentProject = { ...createNewProjectState(), ...projectToLoad }; 
       loadedProjectId = projectId;
-      showLoading(); // Show spinner while updating UI and fetching data
-      // Need to re-fetch surah data for ayah dropdowns before setting UI
-      fetchInitialData().then(() => { // fetchInitialData now also calls updateUIFromProject
-          // Ensure Ayah selects are populated based on loaded Surah *before* setting their values
-          const selectedSurahDetails = surahsData.find(s => s.number == currentProject.surah);
-          if (selectedSurahDetails) {
-              const ayahs = Array.from({ length: selectedSurahDetails.numberOfAyahs }, (_, i) => ({ id: i + 1, name: `آية ${i + 1}` }));
-              populateSelect(ayahStartSelect, ayahs, 'id', 'name');
-              populateSelect(ayahEndSelect, ayahs, 'id', 'name');
-          }
-          ayahStartSelect.value = currentProject.ayahStart; // Now set the values
-          ayahEndSelect.value = currentProject.ayahEnd;
-          
-          updateUIFromProject(); // This will also handle background loading
-          updatePreview();
-          showScreen('editor');
-          currentProjectTitleElement.textContent = currentProject.name;
-          hideLoading();
-      }).catch(err => {
+      showLoading(); 
+      try {
+        await fetchInitialData(); // This now correctly waits and then updates UI
+        // Ensure UI reflects the loaded project fully, especially dynamic parts like Ayah selects
+        updateUIFromProject(); // Call again to ensure everything is synced after data load
+        await updatePreview();  // updatePreview is async now
+        showScreen('editor');
+        if(currentProjectTitleElement) currentProjectTitleElement.textContent = currentProject.name;
+      } catch (err) {
           console.error("Error during project load process:", err);
           alert("خطأ أثناء تحميل المشروع.");
+          resetToNewProject(); 
+      } finally {
           hideLoading();
-          resetToNewProject(); // Fallback to new project state
-      });
+      }
     }
   }
 
@@ -963,15 +1040,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let projects = JSON.parse(localStorage.getItem('quranVideoProjects')) || [];
     projects = projects.filter(p => p.id !== projectId);
     localStorage.setItem('quranVideoProjects', JSON.stringify(projects));
-    loadProjects(); // Refresh list
-    if (loadedProjectId === projectId) { // If deleted project was currently loaded
+    loadProjects(); 
+    if (loadedProjectId === projectId) { 
         resetToNewProject();
     }
   }
 
   // --- Video Export (CCapture.js) ---
   async function exportVideo() {
-    if (!currentProject.surah || !currentProject.ayahStart || !currentProject.ayahEnd) {
+    if (!currentProject || !currentProject.surah || !currentProject.ayahStart || !currentProject.ayahEnd) {
       alert("يرجى اختيار السورة ونطاق الآيات أولاً.");
       return;
     }
@@ -981,24 +1058,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     showLoading("جاري تجهيز التصدير...");
-    exportProgressDiv.style.display = 'block';
-    exportProgressBar.value = 0;
-    exportProgressText.textContent = '0%';
+    if(exportProgressDiv) exportProgressDiv.style.display = 'block';
+    if(exportProgressBar) exportProgressBar.value = 0;
+    if(exportProgressText) exportProgressText.textContent = '0%';
 
     const [exportWidth, exportHeight] = currentProject.resolution.split('x').map(Number);
-    const originalCanvasWidth = canvas.width;
-    const originalCanvasHeight = canvas.height;
+    const originalCanvasWidth = canvas ? canvas.width : 1280; // Fallback
+    const originalCanvasHeight = canvas ? canvas.height : 720; // Fallback
 
-    // Resize canvas for export
-    canvas.width = exportWidth;
-    canvas.height = exportHeight;
+    if(canvas) {
+        canvas.width = exportWidth;
+        canvas.height = exportHeight;
+    } else {
+        console.error("Canvas element not found for export.");
+        hideLoading();
+        if(exportProgressDiv) exportProgressDiv.style.display = 'none';
+        return;
+    }
+
 
     capturer = new CCapture({
-      format: 'webm', // or 'png', 'jpg' for image sequence. 'gif' with CCapture.GIFEncoder.js
-      framerate: 25, // Adjust as needed
+      format: 'webm', 
+      framerate: 25, 
       verbose: false,
-      quality: 90, // For webm, affects quality/size
-      name: `QuranVideo-${currentProject.name.replace(/\s+/g, '_') || 'project'}`
+      quality: 90, 
+      name: `QuranVideo-${(currentProject.name || 'project').replace(/\s+/g, '_')}`
     });
 
     const ayahsToRender = [];
@@ -1012,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const ayahGlobalNum = getGlobalAyahNumber(parseInt(currentProject.surah), i);
         if (!ayahGlobalNum) continue;
 
-        const textEdition = 'quran-uthmani'; // Standard text
+        const textEdition = 'quran-uthmani'; 
         const ayahTextUrl = `${QURAN_API_BASE}/ayah/${ayahGlobalNum}/${textEdition}`;
         const textRes = await axios.get(ayahTextUrl);
         let translationText = "";
@@ -1031,28 +1115,31 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("Error fetching Ayah data for export:", error);
       alert("حدث خطأ أثناء جلب بيانات الآيات للتصدير.");
       hideLoading();
-      exportProgressDiv.style.display = 'none';
-      // Restore original canvas size
-      canvas.width = originalCanvasWidth;
-      canvas.height = originalCanvasHeight;
-      updatePreview();
+      if(exportProgressDiv) exportProgressDiv.style.display = 'none';
+      if(canvas) {
+        canvas.width = originalCanvasWidth;
+        canvas.height = originalCanvasHeight;
+      }
+      await updatePreview();
       return;
     }
     
     if (ayahsToRender.length === 0) {
         alert("لا توجد آيات للتصدير.");
         hideLoading();
-        exportProgressDiv.style.display = 'none';
-        canvas.width = originalCanvasWidth;
-        canvas.height = originalCanvasHeight;
-        updatePreview();
+        if(exportProgressDiv) exportProgressDiv.style.display = 'none';
+        if(canvas) {
+            canvas.width = originalCanvasWidth;
+            canvas.height = originalCanvasHeight;
+        }
+        await updatePreview();
         return;
     }
 
-    hideLoading(); // Hide initial "preparing" spinner, show progress bar instead
+    hideLoading(); 
     capturer.start();
 
-    const delayPerAyah = (currentProject.delayBetweenAyahs + 1) * 1000; // Add 1s for fade/display
+    const delayPerAyah = (currentProject.delayBetweenAyahs + 1) * 1000; 
     const framesPerAyah = Math.ceil(delayPerAyah / (1000 / capturer.framerate));
     let totalFramesRendered = 0;
     const totalFramesToRender = ayahsToRender.length * framesPerAyah;
@@ -1061,23 +1148,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const ayahData = ayahsToRender[i];
       const surahTitleForAyah = `${ayahData.surahName} - آية ${ayahData.ayahInSurah}`;
       
-      // Render this ayah for its duration
-      // For fade effect, we might need more granular frame control
-      const fadeInFrames = currentProject.transition === 'fade' ? Math.floor(capturer.framerate / 2) : 0; // 0.5 sec fade
+      const fadeInFrames = currentProject.transition === 'fade' ? Math.floor(capturer.framerate / 2) : 0; 
       const holdFrames = framesPerAyah - (2 * fadeInFrames);
       const fadeOutFrames = fadeInFrames;
 
-      // Fade In
       for (let f = 0; f < fadeInFrames; f++) {
         ctx.globalAlpha = f / fadeInFrames;
-        await updatePreview(ayahData.text, ayahData.translation, surahTitleForAyah); // Ensure preview updates canvas
+        await updatePreview(ayahData.text, ayahData.translation, surahTitleForAyah); 
         capturer.capture(canvas);
         totalFramesRendered++;
         updateExportProgress(totalFramesRendered, totalFramesToRender);
       }
-      ctx.globalAlpha = 1; // Ensure full opacity after fade in
+      ctx.globalAlpha = 1; 
 
-      // Hold
       for (let f = 0; f < holdFrames; f++) {
         await updatePreview(ayahData.text, ayahData.translation, surahTitleForAyah);
         capturer.capture(canvas);
@@ -1085,7 +1168,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateExportProgress(totalFramesRendered, totalFramesToRender);
       }
       
-      // Fade Out (if not last ayah or if transition is fade)
       if (currentProject.transition === 'fade' && (i < ayahsToRender.length -1 || ayahsToRender.length === 1)) {
           for (let f = 0; f < fadeOutFrames; f++) {
             ctx.globalAlpha = 1 - (f / fadeOutFrames);
@@ -1095,40 +1177,40 @@ document.addEventListener('DOMContentLoaded', () => {
             updateExportProgress(totalFramesRendered, totalFramesToRender);
           }
       }
-       ctx.globalAlpha = 1; // Reset global alpha
+       ctx.globalAlpha = 1; 
     }
 
     capturer.stop();
     capturer.save();
 
-    exportProgressText.textContent = 'اكتمل التصدير!';
+    if(exportProgressText) exportProgressText.textContent = 'اكتمل التصدير!';
     setTimeout(() => {
-        exportProgressDiv.style.display = 'none';
+        if(exportProgressDiv) exportProgressDiv.style.display = 'none';
     }, 3000);
     
-    // Restore original canvas size and preview
-    canvas.width = originalCanvasWidth;
-    canvas.height = originalCanvasHeight;
-    updatePreview();
+    if(canvas) {
+        canvas.width = originalCanvasWidth;
+        canvas.height = originalCanvasHeight;
+    }
+    await updatePreview();
   }
   
   function updateExportProgress(currentFrame, totalFrames) {
     const percent = Math.round((currentFrame / totalFrames) * 100);
-    exportProgressBar.value = percent;
-    exportProgressText.textContent = `${percent}%`;
+    if(exportProgressBar) exportProgressBar.value = percent;
+    if(exportProgressText) exportProgressText.textContent = `${percent}%`;
   }
 
   // --- Utility Functions ---
   function showLoading(message = null) {
     if (message) {
-        // Could add a message to the spinner if design allows
-        console.log("Loading:", message);
+        // console.log("Loading:", message); // Removed for mobile focus
     }
-    loadingSpinner.style.display = 'flex';
+    if(loadingSpinner) loadingSpinner.style.display = 'flex';
   }
 
   function hideLoading() {
-    loadingSpinner.style.display = 'none';
+    if(loadingSpinner) loadingSpinner.style.display = 'none';
   }
 
   function debounce(func, delay) {
