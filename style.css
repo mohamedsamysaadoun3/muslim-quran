@@ -1,15 +1,15 @@
-/* ... (نفس :root والمتغيرات و body و .dark-theme) ... */
+/* ... (نفس :root والمتغيرات و body) ... */
 :root {
   --primary-color: #00796b; /* Teal */
   --primary-color-darker: #004d40;
   --secondary-color: #ffab40; /* Amber accent */
   --bg-light: #f4f6f8;
-  --bg-dark: #1e1e1e; /* Darker grey */
+  --bg-dark: #121212; /* أغمق قليلاً للتباين الأفضل */
   --surface-light: #ffffff;
-  --surface-dark: #2a2a2a; /* Slightly lighter dark for cards/panels */
+  --surface-dark: #1e1e1e; /* للأسطح والكروت في الوضع المظلم */
   --text-light: #212121;
   --text-dark: #e0e0e0;
-  --font-family-quran: 'Amiri Quran', serif; /* Default Quran font */
+  --font-family-quran: 'Amiri Quran', serif;
   --font-family-ui: 'Tajawal', sans-serif;
   --highlight-bg-light: rgba(255, 224, 130, 0.5); 
   --highlight-bg-dark: rgba(0, 121, 107, 0.6); 
@@ -22,55 +22,73 @@
 body {
   margin: 0;
   font-family: var(--font-family-ui);
-  background-color: var(--bg-light);
-  color: var(--text-light);
+  background-color: var(--bg-light); /* لون الخلفية الافتراضي */
+  color: var(--text-light); /* لون النص الافتراضي */
   line-height: 1.6;
   transition: background-color 0.3s, color 0.3s;
 }
 
-.dark-theme {
-  --bg-light: var(--bg-dark);
-  --bg-dark: var(--bg-light); 
-  --surface-light: var(--surface-dark);
-  --surface-dark: var(--surface-light);
-  --text-light: var(--text-dark);
-  --text-dark: var(--text-light);
-  --highlight-bg-light: var(--highlight-bg-dark);
-  --highlight-bg-dark: var(--highlight-bg-light);
-  --separator-light: var(--separator-dark);
-  --separator-dark: var(--separator-light);
-}
-.dark-theme body {
+/* الوضع المظلم */
+body.dark-theme { /* تطبيق التغييرات عند وجود كلاس dark-theme على الـ body */
   background-color: var(--bg-dark);
   color: var(--text-dark);
 }
 
-#app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+body.dark-theme .app-header {
+  background-color: var(--primary-color-darker); /* تغيير لون الهيدر ليكون أغمق قليلاً في الوضع المظلم */
+}
+body.dark-theme .theme-button { /* زر الثيم في الوضع المظلم */
+   border-color: var(--text-dark);
+   color: var(--text-dark);
+}
+body.dark-theme .editor-header .theme-button { /* زر الثيم في هيدر المحرر */
+    border-color: white; /* الحفاظ على لونه الأبيض ليتناسب مع خلفية الهيدر */
+    color: white;
+}
+body.dark-theme .project-card {
+  background-color: var(--surface-dark);
+  color: var(--text-dark);
+  border: 1px solid var(--separator-dark); /* إضافة حدود بسيطة للكروت */
+}
+body.dark-theme .initial-footer {
+    background-color: var(--bg-dark);
+}
+body.dark-theme .button-primary-action {
+  background-color: var(--surface-dark);
+  color: var(--text-dark);
+  border: 1px solid var(--separator-dark);
+}
+body.dark-theme .button-primary-action:hover {
+  background-color: #333; /* لون أغمق عند المرور */
+}
+body.dark-theme .copyright { 
+    color: var(--text-dark); 
 }
 
-/* --- Initial Screen --- */
+/* --- شاشات التطبيق --- */
 #initial-screen {
-  display: flex;
+  display: flex; /* يجب أن تكون flex لتظهر */
   flex-direction: column;
   height: 100vh; 
+  /* visibility: visible; opacity: 1; transition: opacity 0.3s; */
 }
-#initial-screen main {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
+/* #initial-screen.hidden { visibility: hidden; opacity: 0; } */
+
+
+#editor-screen {
+  display: none; /* تبدأ مخفية */
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden; 
+  /* visibility: hidden; opacity: 0; transition: opacity 0.3s; */
 }
-.app-header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: var(--shadow);
-}
+/* #editor-screen.visible { display: flex; visibility: visible; opacity: 1; } */
+
+
+/* ... (باقي تنسيقات الـ CSS كما هي من الرد السابق، مع التركيز على أن #initial-screen تبدأ بـ display: flex و #editor-screen تبدأ بـ display: none) ... */
+
+/* تأكد من أن تنسيقات العناصر داخل #editor-screen لا تتسبب في إخفائها بشكل غير مقصود */
+
 .app-header h1 {
   margin: 0;
   font-size: 1.4em; 
@@ -81,7 +99,7 @@ body {
 }
 .theme-button { 
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.5);
+  /* border: 1px solid rgba(255,255,255,0.5); */ /* تم تعديلها لـ body.dark-theme .theme-button */
   color: white;
   font-size: 1.1em; 
   cursor: pointer;
@@ -93,15 +111,6 @@ body {
 .theme-button:hover {
   background-color: rgba(255,255,255,0.1);
 }
-.dark-theme .theme-button {
-   border: 1px solid var(--separator-dark); 
-   color: var(--text-dark); /* لون الأيقونة في الثيم الداكن */
-}
-.dark-theme .editor-header .theme-button { /* لزر الثيم في الهيدر الداخلي */
-    border: 1px solid rgba(255,255,255,0.5); /* الحفاظ على وضوحه ضد خلفية الهيدر */
-    color: white;
-}
-
 
 .projects-section {
   margin-top: 20px;
@@ -127,10 +136,7 @@ body {
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.dark-theme .project-card {
-  background-color: var(--surface-dark);
-  color: var(--text-dark);
-}
+
 .project-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
@@ -153,15 +159,13 @@ body {
   margin-top: auto; 
   background-color: var(--bg-light); 
 }
-.dark-theme .initial-footer {
-    background-color: var(--bg-dark);
-}
+
 
 .button-primary-action {
-  background-color: var(--primary-color); /* تغيير اللون ليكون أوضح */
+  background-color: var(--primary-color); 
   color: white; 
-  border: none; /* إزالة الحدود */
-  border-radius: 6px; /* زيادة دائرية الحواف */
+  border: none; 
+  border-radius: 6px; 
   padding: 12px 25px; 
   font-size: 1.1em; 
   font-family: var(--font-family-ui);
@@ -171,29 +175,19 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: var(--shadow); /* إضافة ظل بسيط */
+  box-shadow: var(--shadow); 
 }
 .button-primary-action:hover {
   background-color: var(--primary-color-darker);
 }
-/* لا حاجة لتعديل خاص بالثيم الداكن هنا إذا كان اللون الأساسي مناسبًا */
 
 
 .copyright {
   font-size: 0.8em;
-  color: var(--text-light); 
+  /* color: var(--text-light);  تم تعريفها في body */
   margin-top: 20px; 
 }
-.dark-theme .copyright { color: var(--text-dark); }
 
-
-/* --- Editor Screen --- */
-#editor-screen {
-  display: flex; 
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden; 
-}
 .editor-header {
   background-color: var(--primary-color);
   color: white;
@@ -204,6 +198,10 @@ body {
   box-shadow: var(--shadow);
   flex-shrink: 0;
 }
+body.dark-theme .editor-header {
+    background-color: var(--primary-color-darker);
+}
+
 .editor-header h2 { margin: 0; font-size: 1.2em; flex-grow: 1; }
 .icon-button, .action-button {
   background: transparent;
@@ -227,12 +225,10 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: var(--bg-light); 
+  /* background-color: var(--bg-light); تم تعريفها في body */
   overflow: hidden; 
 }
-.dark-theme #editor-main-area {
-  background-color: var(--bg-dark);
-}
+
 
 #video-preview-container {
   width: 90%; 
@@ -263,7 +259,7 @@ body {
     text-align: center;
 }
 
-.preview-text-no-shadow { /* كلاس جديد لإلغاء الظل */
+.preview-text-no-shadow {
     text-shadow: none !important;
 }
 
@@ -271,11 +267,10 @@ body {
   color: #FFFFFF; 
   font-size: 2em; 
   margin-bottom: 15px; 
-  /* text-shadow: 1px 1px 3px rgba(0,0,0,0.7); <-- ألغي من هنا، يتم التحكم به الآن بالكلاس */
 }
 
 #preview-ayah-text {
-  font-family: var(--font-family-quran); /* سيتم تحديده من script.js بناءً على اختيار المستخدم */
+  font-family: var(--font-family-quran); 
   font-size: 2.5em; 
   line-height: 1.8;
   color: #FFFFFF; 
@@ -307,72 +302,71 @@ body {
   flex-shrink: 0;
   direction: ltr; 
 }
-.dark-theme #editor-toolbar {
+body.dark-theme #editor-toolbar {
   background-color: var(--surface-dark);
 }
 .toolbar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* توسيط محتوى القسم */
+  justify-content: center; 
   direction: rtl; 
-  flex: 1; /* توزيع المساحة بالتساوي */
-  min-width: 80px; /* حد أدنى لعرض التبويب */
+  flex: 1; 
+  min-width: 80px; 
 }
 .toolbar-tab-button {
   background: none;
   border: none;
-  color: var(--text-light); 
-  padding: 8px 5px; /* تقليل الحشو الجانبي قليلاً */
+  /* color: var(--text-light); تم تعريفها في body */
+  padding: 8px 5px; 
   cursor: pointer;
   font-family: var(--font-family-ui);
   font-size: 0.9em;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* توسيط الأيقونة والنص */
-  gap: 3px; /* تقليل المسافة بين الأيقونة والنص */
-  width: 100%; /* لجعل الزر يملأ القسم */
-  text-align: center; /* توسيط النص */
+  justify-content: center; 
+  gap: 3px; 
+  width: 100%; 
+  text-align: center; 
 }
-.dark-theme .toolbar-tab-button { color: var(--text-dark); }
+
 .toolbar-tab-button i { 
-    font-size: 1.4em; /* تصغير الأيقونة قليلاً */
+    font-size: 1.4em; 
     margin-bottom: 0; 
 }
 .toolbar-tab-button span { 
-    font-size: 0.75em; /* تصغير النص قليلاً */
-    white-space: nowrap; /* منع التفاف النص */
+    font-size: 0.75em; 
+    white-space: nowrap; 
 }
 .toolbar-section.active .toolbar-tab-button {
   color: var(--primary-color);
-  /* border-bottom: 2px solid var(--primary-color); <-- يمكن إزالة هذا أو تغييره لمؤشر آخر */
 }
 .toolbar-section.active .toolbar-tab-button i,
 .toolbar-section.active .toolbar-tab-button span {
-    color: var(--primary-color); /* تأكيد لون الأيقونة والنص للتبويب النشط */
+    color: var(--primary-color); 
 }
 
 
 .toolbar-controls {
   position: fixed;
-  bottom: 60px;  /* تعديل الارتفاع ليتناسب مع شريط الأدوات الجديد */
+  bottom: 60px;  
   left: 0;
   right: 0;
   background-color: var(--surface-light);
-  color: var(--text-light); 
+  /* color: var(--text-light); تم تعريفها في body */
   padding: 15px;
   border-top: 1px solid var(--separator-light);
   box-shadow: 0 -3px 6px rgba(0,0,0,0.1);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: grid; /* سيبقى grid عند الظهور */
+  /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */ /* يتم التحكم به من JS */
   gap: 15px;
-  max-height: 45vh; /* زيادة الارتفاع الأقصى قليلاً */
+  max-height: 45vh; 
   overflow-y: auto;
 }
-.dark-theme .toolbar-controls {
+body.dark-theme .toolbar-controls {
   background-color: var(--surface-dark);
-  color: var(--text-dark);
+  /* color: var(--text-dark); تم تعريفها في body */
   border-top: 1px solid var(--separator-dark);
 }
 .toolbar-controls div { display: flex; flex-direction: column; }
@@ -384,16 +378,18 @@ body {
   border-radius: 4px;
   border: 1px solid var(--separator-light);
   background-color: var(--bg-light); 
-  color: var(--text-light);
+  /* color: var(--text-light); تم تعريفها في body */
   width: 100%;
   box-sizing: border-box;
 }
-.dark-theme .toolbar-controls select, .dark-theme .toolbar-controls input[type="file"],
-.dark-theme .toolbar-controls input[type="color"], .dark-theme .toolbar-controls input[type="range"],
-.dark-theme .toolbar-controls input[type="number"] {
+body.dark-theme .toolbar-controls select, 
+body.dark-theme .toolbar-controls input[type="file"],
+body.dark-theme .toolbar-controls input[type="color"], 
+body.dark-theme .toolbar-controls input[type="range"],
+body.dark-theme .toolbar-controls input[type="number"] {
   border: 1px solid var(--separator-dark);
   background-color: var(--bg-dark);
-  color: var(--text-dark);
+  /* color: var(--text-dark); تم تعريفها في body */
 }
 
 .control-button, .main-button {
@@ -429,7 +425,6 @@ body {
     border-color: var(--secondary-color);
 }
 
-/* Text Effects */
 .typewriter-char {
     opacity: 0;
     animation: typechar 0.1s forwards;
@@ -438,13 +433,12 @@ body {
     to { opacity: 1; }
 }
 
-/* Spinner */
 .spinner-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   z-index: 10000; 
-  display: flex; 
+  display: none; /* يبدأ مخفيًا ويتم التحكم به عبر JS */
   align-items: center;
   justify-content: center;
 }
@@ -460,6 +454,5 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* Export progress */
 #export-progress { margin-top: 10px; text-align: center;}
 #export-progress-bar { width: 80%; }
