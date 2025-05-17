@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // !! للحصول على مفتاح: https://www.pexels.com/api/
   // !! هام: هذا المفتاح سيكون ظاهرًا في كود العميل. للتطبيقات الإنتاجية،
   // !! يُفضل استخدام وسيط (backend proxy) لإخفاء المفتاح وحمايته.
-  const PEXELS_API_KEY = 'YOUR_PEXELS_API_KEY'; // <--- استبدل هذا بمفتاحك
+  const PEXELS_API_KEY = 'u4eXg16pNHbWDuD16SBiks0vKbV21xHDziyLCHkRyN9z08ruazKntJj7'; // <--- استبدل هذا بمفتاحك
 
-  if (PEXELS_API_KEY === 'YOUR_PEXELS_API_KEY') {
+  if (PEXELS_API_KEY === 'u4eXg16pNHbWDuD16SBiks0vKbV21xHDziyLCHkRyN9z08ruazKntJj7') {
     console.warn("الرجاء إضافة مفتاح Pexels API في ملف script.js لتفعيل اقتراحات الخلفيات.");
     const applyAiBgButton = document.getElementById('apply-ai-bg');
     if (applyAiBgButton) {
