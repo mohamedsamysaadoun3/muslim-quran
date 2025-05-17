@@ -21,31 +21,30 @@
     <div id="initial-screen">
       <header class="app-header">
         <h1>صانع فيديوهات القرآن الكريم</h1>
-        <button id="theme-toggle-initial" title="تبديل الثيم">🌓</button>
+        <button id="theme-toggle-initial" class="theme-button" title="تبديل الثيم">🌓</button>
       </header>
       <main>
         <div class="projects-section">
           <h2>مشاريعي المحفوظة</h2>
           <div id="projects-list">
-            <!-- Projects will be listed here -->
             <p id="no-projects-message">لا توجد مشاريع محفوظة بعد.</p>
           </div>
         </div>
       </main>
-      <footer>
-        <button id="go-to-editor-btn" class="fab-create"><i class="fas fa-plus"></i> إنشاء فيديو جديد</button>
+      <footer class="initial-footer">
+        <button id="go-to-editor-btn" class="button-primary-action"><i class="fas fa-plus"></i> إنشاء فيديو جديد</button>
         <p class="copyright">© 2025 Muslim Quran</p>
       </footer>
     </div>
 
-    <!-- Editor Screen -->
+    <!-- Editor Screen (نفس المحتوى السابق) -->
     <div id="editor-screen" style="display:none;">
       <header class="editor-header">
         <button id="back-to-initial-screen-btn" class="icon-button" title="العودة"><i class="fas fa-arrow-right"></i></button>
         <h2 id="current-project-title">مشروع جديد</h2>
         <div class="header-actions">
           <button id="save-project-btn" class="action-button">حفظ المشروع</button>
-          <button id="theme-toggle-editor" title="تبديل الثيم">🌓</button>
+          <button id="theme-toggle-editor" class="theme-button" title="تبديل الثيم">🌓</button>
         </div>
       </header>
 
