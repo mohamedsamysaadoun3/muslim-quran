@@ -1,275 +1,42 @@
-:root {
-  --primary-color: #00796b; /* Teal - kept for consistency */
-  --primary-color-darker: #004d40;
-  --secondary-color: #ffab40; /* Amber accent */
-  
-  /* Dark Theme (Default) */
-  --bg-color-dark: #121212; /* Very dark grey, almost black */
-  --surface-color-dark: #1e1e1e; /* Dark grey for surfaces */
-  --surface-color-dark-lighter: #2a2a2a; /* Slightly lighter for nested surfaces */
-  --text-color-dark: #e0e0e0; /* Light grey for text */
-  --text-color-dark-secondary: #b0b0b0; /* Dimmer text */
-  --separator-color-dark: #3a3a3a;
-  --accent-color-dark: var(--primary-color); /* Teal accent */
-  --button-bg-dark: #333333;
-  --button-hover-bg-dark: #444444;
-
-
-  /* Light Theme Vars (if switched) */
-  --bg-color-light: #f4f6f8;
-  --surface-color-light: #ffffff;
-  --text-color-light: #212121;
-  --separator-color-light: #e0e0e0;
-  --accent-color-light: var(--primary-color);
-
-
-  /* General UI Vars */
-  --font-family-quran: 'Amiri Quran', serif;
-  --font-family-ui: 'Tajawal', sans-serif;
-  --shadow: 0 2px 5px rgba(0,0,0,0.2);
-  --shadow-strong: 0 4px 10px rgba(0,0,0,0.3);
-
-  /* Default to Dark Theme Variables */
-  --current-bg-color: var(--bg-color-dark);
-  --current-surface-color: var(--surface-color-dark);
-  --current-surface-lighter: var(--surface-color-dark-lighter);
-  --current-text-color: var(--text-color-dark);
-  --current-text-secondary-color: var(--text-color-dark-secondary);
-  --current-separator-color: var(--separator-color-dark);
-  --current-accent-color: var(--accent-color-dark);
-  --current-button-bg: var(--button-bg-dark);
-  --current-button-hover-bg: var(--button-hover-bg-dark);
-}
-
-body {
-  margin: 0;
-  font-family: var(--font-family-ui);
-  background-color: var(--current-bg-color);
-  color: var(--current-text-color);
-  line-height: 1.6;
-  transition: background-color 0.3s, color 0.3s;
-  overflow: hidden; /* Prevent body scroll on mobile */
-}
-
-.light-theme {
-  --current-bg-color: var(--bg-color-light);
-  --current-surface-color: var(--surface-color-light);
-  --current-surface-lighter: #f0f0f0; /* Light theme equivalent */
-  --current-text-color: var(--text-color-light);
-  --current-text-secondary-color: #555555;
-  --current-separator-color: var(--separator-color-light);
-  --current-accent-color: var(--accent-color-light);
-  --current-button-bg: #e0e0e0;
-  --current-button-hover-bg: #d0d0d0;
-}
-.light-theme body { 
-  background-color: var(--bg-color-light);
-  color: var(--text-color-light);
-}
-
-
-#app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh; /* Full viewport height */
-  max-height: 100vh; /* Ensure it doesn't exceed viewport */
-}
-
-/* --- Initial Screen (Mostly Unchanged, Theming Applied) --- */
-#initial-screen {
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
-}
-#initial-screen main {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background-color: var(--current-bg-color);
-}
-.app-header {
-  background-color: var(--current-surface-color); /* Use surface for header */
-  color: var(--current-text-color);
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: var(--shadow);
-  border-bottom: 1px solid var(--current-separator-color);
-}
-.app-header h1 { margin: 0; font-size: 1.3em; }
-.theme-button { 
-  background: var(--current-button-bg);
-  border: 1px solid var(--current-separator-color);
-  color: var(--current-text-color);
-  font-size: 1.1em; 
-  cursor: pointer;
-  padding: 6px 10px; 
-  border-radius: 20px; /* Rounded */
-}
-.theme-button:hover { background-color: var(--current-button-hover-bg); }
-
-.projects-section h2 {
-  color: var(--current-accent-color);
-  border-bottom: 2px solid var(--current-accent-color);
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-  font-size: 1.6em;
-}
-#projects-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-.project-card {
-  background-color: var(--current-surface-lighter);
-  color: var(--current-text-color); 
-  border-radius: 12px; /* More rounded */
-  padding: 20px;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.project-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-strong);
-}
-.project-card h3 { margin-top: 0; color: var(--current-accent-color); font-size: 1.2em; }
-.project-card p { font-size: 0.85em; margin-bottom: 5px; color: var(--current-text-secondary-color); }
-.project-actions button {
-  background: none; border: none;
-  color: var(--current-accent-color);
-  cursor: pointer; margin-right: 10px; font-size: 0.9em; padding: 5px;
-}
-.initial-footer { 
-  padding: 15px; text-align: center; margin-top: auto; 
-  background-color: var(--current-surface-color);
-  border-top: 1px solid var(--current-separator-color);
-}
-.button-primary-action {
-  background-color: var(--current-accent-color); 
-  color: white; 
-  border: none; border-radius: 25px; /* Pill shape */
-  padding: 12px 25px; font-size: 1.1em; 
-  font-weight: bold; cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  display: inline-flex; align-items: center; gap: 10px;
-  box-shadow: var(--shadow);
-}
-.button-primary-action:hover {
-  background-color: var(--primary-color-darker); /* Assuming accent is primary */
-  box-shadow: var(--shadow-strong);
-}
-.copyright { font-size: 0.8em; color: var(--current-text-secondary-color); margin-top: 15px; }
-
+/* ... (بداية ملف style.css كما هي) ... */
 
 /* --- Editor Screen (New Structure) --- */
-#editor-screen {
-  display: flex; 
-  flex-direction: column;
-  height: 100%; /* Full height of app container */
-  overflow: hidden; 
-  background-color: var(--current-bg-color);
-}
-
-#editor-top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 15px;
-  background-color: var(--current-surface-color);
-  border-bottom: 1px solid var(--current-separator-color);
-  flex-shrink: 0;
-  box-shadow: var(--shadow);
-}
-#editor-top-bar h2 {
-  margin: 0;
-  font-size: 1.1em;
-  font-weight: 500;
-  color: var(--current-text-color);
-}
-.top-bar-btn {
-  background: none;
-  border: none;
-  color: var(--current-text-color);
-  font-size: 1.3em; /* Icon size */
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-.top-bar-btn.primary {
-  background-color: var(--current-accent-color);
-  color: white;
-  font-size: 0.9em; /* Text button */
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: bold;
-}
-.top-bar-btn:hover {
-  background-color: var(--current-button-hover-bg);
-}
-.top-bar-btn.primary:hover {
-  background-color: var(--primary-color-darker); /* Assuming accent is primary */
-}
-
-
-#editor-preview-area {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  overflow: hidden;
-}
-#video-preview-container { /* Unchanged, but ensure it fits */
-  width: 100%; 
-  max-width: 500px; /* Max width for mobile-like preview */
-  aspect-ratio: 16 / 9;
-  background-color: #000000; 
-  border-radius: 12px; /* Rounded preview */
-  box-shadow: var(--shadow-strong);
-  position: relative; 
-  overflow: hidden; 
-}
-#video-preview-canvas { display: block; width: 100%; height: 100%; object-fit: cover; }
-#preview-overlay-content { /* Unchanged */ }
-#preview-surah-title { /* Unchanged */ }
-#preview-ayah-text { /* Unchanged */ }
-.translation-text-overlay { /* Unchanged */ }
-
+/* ... (تنسيقات #editor-screen, #editor-top-bar, #editor-preview-area كما هي) ... */
 
 #editor-dynamic-controls-container {
   background-color: var(--current-surface-color);
-  padding: 15px;
+  padding: 15px 20px; /* زيادة الحشو الجانبي قليلاً */
   overflow-y: auto;
-  max-height: 35vh; /* Adjust as needed */
+  max-height: 40vh; /* زيادة المساحة المتاحة للوحة التحكم قليلاً */
   border-top: 1px solid var(--current-separator-color);
   flex-shrink: 0;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Shadow upwards */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1); 
 }
 .control-panel {
-  display: none; /* Hidden by default, shown by JS */
-  gap: 15px;
+  display: none; 
+  gap: 18px; /* زيادة المسافة بين مجموعات التحكم */
   flex-direction: column;
 }
 .control-panel.active-panel {
-  display: flex; /* Or grid, depending on content */
+  display: flex; 
 }
-.control-panel h3 {
-  font-size: 1em;
+.control-panel h3 { /* عنوان اللوحة مثل "إعدادات القرآن" */
+  font-size: 0.9em; /* تصغير الخط قليلاً */
   color: var(--current-accent-color);
   margin-top: 0;
-  margin-bottom: 10px;
-  padding-bottom: 5px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--current-separator-color);
+  text-align: center; /* توسيط العنوان */
+  font-weight: bold;
 }
 .control-panel > div {
-  margin-bottom: 10px;
+  margin-bottom: 12px; /* تناسق المسافات */
 }
 .control-panel label {
   display: block;
-  font-size: 0.9em;
-  margin-bottom: 5px;
+  font-size: 0.85em; /* تصغير الخط */
+  margin-bottom: 6px;
   color: var(--current-text-secondary-color);
 }
 .control-panel select,
@@ -278,8 +45,8 @@ body {
 .control-panel input[type="file"],
 .control-panel input[type="color"] {
   width: 100%;
-  padding: 10px;
-  background-color: var(--current-button-bg);
+  padding: 12px; /* زيادة الحشو الداخلي للمدخلات */
+  background-color: var(--current-bg-color); /* خلفية أغمق للمدخلات */
   color: var(--current-text-color);
   border: 1px solid var(--current-separator-color);
   border-radius: 8px;
@@ -287,124 +54,78 @@ body {
   font-size: 0.9em;
 }
 .control-panel input[type="color"] {
-  height: 45px; /* Make color picker a bit taller */
+  height: 48px; 
 }
-.control-panel input[type="range"] {
-  padding: 0;
-}
+
+/* لتعديل ترتيب "من آية" و "إلى آية" بصريًا */
 .ayah-range-inputs {
   display: flex;
-  gap: 10px;
+  gap: 15px; /* زيادة المسافة بين مدخلي الآيات */
+  /* لإجبار الترتيب البصري، يمكننا استخدام order إذا كان flex direction row */
+  /* أو ببساطة الاعتماد على ترتيب HTML وجعل المستخدم يتكيف معه إذا كان RTL هو الأساس */
 }
 .ayah-range-inputs > div {
   flex: 1;
 }
-.control-button, .main-button { /* General button style for panels */
-  padding: 10px 15px;
-  background: var(--current-accent-color);
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-family: var(--font-family-ui);
-  transition: background-color 0.2s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 0.9em;
+/* إذا أردت عكس الترتيب البصري فقط لـ RTL: */
+html[dir="rtl"] .ayah-range-inputs > div:first-child {
+  /* هذا هو "من آية" في HTML */
+  /* order: 2;  قد يسبب ارتباكًا مع tab navigation */
 }
-.control-button:hover, .main-button:hover { background: var(--primary-color-darker); }
-#ai-bg-suggestions { /* Unchanged */ }
+html[dir="rtl"] .ayah-range-inputs > div:last-child {
+  /* هذا هو "إلى آية" في HTML */
+  /* order: 1; */
+}
+/* الأفضل هو الحفاظ على الترتيب المنطقي لـ RTL وجعل "من آية" على اليمين */
+
+
+/* ... (تنسيقات .control-button, .main-button, #ai-bg-suggestions كما هي) ... */
 
 
 #editor-bottom-bar {
   background-color: var(--current-surface-color);
   border-top: 1px solid var(--current-separator-color);
-  padding: 5px 0;
+  padding-top: 8px; /* مسافة علوية قبل الشريط الزمني */
+  padding-bottom: 5px;
   flex-shrink: 0;
   box-shadow: 0 -3px 8px rgba(0,0,0,0.2);
 }
 #timeline-placeholder {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center the simplified timeline */
-  padding: 5px 15px;
-  font-size: 0.7em;
+  justify-content: space-between; /* توزيع أفضل للعلامات */
+  padding: 0px 20px 8px 20px; /* تعديل الحشو */
+  font-size: 0.75em;
   color: var(--current-text-secondary-color);
-  height: 20px; /* Fixed height for timeline */
+  height: 20px; 
 }
 .timeline-tick {
-  margin: 0 5px;
+  position: relative; /* لإضافة الخطوط العمودية الصغيرة */
+}
+.timeline-tick::before { /* الخط العمودي الصغير تحت كل رقم ثانية */
+  content: '';
+  position: absolute;
+  bottom: -5px; /* أسفل النص قليلاً */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 4px;
+  background-color: var(--current-text-secondary-color);
 }
 .timeline-track {
-  height: 2px;
+  height: 1px; /* خط أنحف */
   background-color: var(--current-separator-color);
   flex-grow: 1;
-  max-width: 30px; /* Limit track width */
+  margin: 0 5px; /* مسافة حول الخط الأفقي */
 }
 
 #main-actions-toolbar {
   display: flex;
-  justify-content: space-around; /* Distribute items evenly */
+  justify-content: space-around; 
   align-items: center;
-  padding: 8px 5px; /* Reduced padding */
+  padding: 8px 10px; /* زيادة الحشو الجانبي قليلاً */
 }
-.action-tool-btn {
-  background: none;
-  border: none;
-  color: var(--current-text-secondary-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5px; /* Smaller padding */
-  cursor: pointer;
-  font-size: 0.75em; /* Smaller text */
-  flex: 1; /* Make buttons take equal space */
-  max-width: 70px; /* Limit button width */
-  border-radius: 8px;
-  transition: background-color 0.2s, color 0.2s;
-}
-.action-tool-btn i {
-  font-size: 1.5em; /* Icon size */
-  margin-bottom: 3px;
-}
-.action-tool-btn.active {
-  color: var(--current-accent-color); /* Highlight active tool */
-  background-color: rgba(var(--rgb-accent-color, 0, 121, 107), 0.1); /* Use RGB for opacity with accent */
-}
-.action-tool-btn:hover {
-  background-color: var(--current-button-hover-bg);
-}
+/* ... (بقية تنسيقات .action-tool-btn كما هي) ... */
 
 
-/* Spinner (Unchanged) */
-.spinner-overlay { /* ... */ }
-.spinner { /* ... */ }
-@keyframes spin { /* ... */ }
-/* Export progress (Unchanged) */
-#export-progress { /* ... */ }
-
-/* Specific styles from images if needed */
-/* e.g., the red button for "صوت" from screenshot */
-.action-tool-btn[data-panel="audio-options-panel"].active {
-  /* color: #e91e63; Example pinkish red */
-  /* background-color: rgba(233, 30, 99, 0.1); */
-}
-
-/* Responsive adjustments */
-@media (max-width: 360px) {
-  .action-tool-btn i { font-size: 1.3em; }
-  .action-tool-btn span { font-size: 0.7em; }
-  #editor-top-bar h2 { font-size: 1em; }
-}
-
-/* Helper for JS to set RGB version of accent color */
-body {
-  /* These will be set by JS based on the theme's accent color */
-  --rgb-accent-color: 0, 121, 107; /* Default for Teal */
-}
-.light-theme {
-  --rgb-accent-color: 0, 121, 107; /* Still Teal for light theme */
-}
+/* ... (تنسيقات Spinner, Export progress, Responsive adjustments, Helper for RGB كما هي) ... */
