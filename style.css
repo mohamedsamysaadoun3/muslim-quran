@@ -3,15 +3,15 @@
   --primary-color-darker: #004d40;
   --secondary-color: #ffab40; /* Amber accent */
   --bg-light: #f4f6f8;
-  --bg-dark: #121212; 
+  --bg-dark: #1e1e1e; /* Darker grey */
   --surface-light: #ffffff;
-  --surface-dark: #1e1e1e; 
+  --surface-dark: #2a2a2a; /* Slightly lighter dark for cards/panels */
   --text-light: #212121;
   --text-dark: #e0e0e0;
   --font-family-quran: 'Amiri Quran', serif;
   --font-family-ui: 'Tajawal', sans-serif;
-  --highlight-bg-light: rgba(255, 224, 130, 0.5); 
-  --highlight-bg-dark: rgba(0, 121, 107, 0.6); 
+  --highlight-bg-light: rgba(255, 224, 130, 0.5); /* Light yellow highlight */
+  --highlight-bg-dark: rgba(0, 121, 107, 0.6); /* Teal highlight for dark theme */
   --separator-light: #e0e0e0;
   --separator-dark: #424242;
   --shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -27,60 +27,22 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-body.dark-theme {
+.dark-theme {
+  --bg-light: var(--bg-dark);
+  --bg-dark: var(--bg-light); 
+  --surface-light: var(--surface-dark);
+  --surface-dark: var(--surface-light);
+  --text-light: var(--text-dark);
+  --text-dark: var(--text-light);
+  --highlight-bg-light: var(--highlight-bg-dark);
+  --highlight-bg-dark: var(--highlight-bg-light);
+  --separator-light: var(--separator-dark);
+  --separator-dark: var(--separator-light);
+}
+.dark-theme body {
   background-color: var(--bg-dark);
   color: var(--text-dark);
 }
-body.dark-theme .app-header {
-  background-color: var(--primary-color-darker);
-}
-body.dark-theme .theme-button {
-   border-color: var(--text-dark);
-   color: var(--text-dark);
-}
-body.dark-theme .editor-header .theme-button {
-    border-color: white;
-    color: white;
-}
-body.dark-theme .project-card {
-  background-color: var(--surface-dark);
-  color: var(--text-dark);
-  border: 1px solid var(--separator-dark);
-}
-body.dark-theme .initial-footer {
-    background-color: var(--bg-dark);
-}
-body.dark-theme .button-primary-action {
-  background-color: var(--surface-dark); /* Or a distinct dark theme accent */
-  color: var(--text-dark);
-  border: 1px solid var(--separator-dark);
-}
-body.dark-theme .button-primary-action:hover {
-  background-color: #333;
-}
-body.dark-theme .copyright { 
-    color: var(--text-dark); 
-}
-body.dark-theme #editor-toolbar {
-  background-color: var(--surface-dark);
-}
-body.dark-theme .toolbar-controls {
-  background-color: var(--surface-dark);
-  border-top: 1px solid var(--separator-dark);
-}
-body.dark-theme .toolbar-controls select, 
-body.dark-theme .toolbar-controls input[type="file"],
-body.dark-theme .toolbar-controls input[type="color"], 
-body.dark-theme .toolbar-controls input[type="range"],
-body.dark-theme .toolbar-controls input[type="number"] {
-  border: 1px solid var(--separator-dark);
-  background-color: var(--bg-dark); /* Match body background */
-  color: var(--text-dark);
-}
-body.dark-theme #editor-main-area {
-  background-color: var(--bg-dark);
-}
-
 
 #app-container {
   display: flex;
@@ -110,28 +72,28 @@ body.dark-theme #editor-main-area {
 }
 .app-header h1 {
   margin: 0;
-  font-size: 1.4em; 
+  font-size: 1.4em; /* تعديل حجم الخط ليناسب الشاشة */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-grow: 1;
 }
-.theme-button { 
+.theme-button { /* تنسيق موحد لأزرار الثيم */
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.5); /* Default for light theme header */
+  border: 1px solid rgba(255,255,255,0.5);
   color: white;
-  font-size: 1.1em; 
+  font-size: 1.1em; /* تعديل حجم الأيقونة */
   cursor: pointer;
-  padding: 6px 10px; 
+  padding: 6px 10px; /* تعديل الحشو */
   border-radius: 4px;
   flex-shrink: 0;
-  line-height: 1; 
+  line-height: 1; /* لضبط ارتفاع الأيقونة بشكل أفضل */
 }
 .theme-button:hover {
-  background-color: rgba(255,255,255,0.1); /* Light theme hover */
+  background-color: rgba(255,255,255,0.1);
 }
-body.dark-theme .theme-button:hover {
-    background-color: rgba(255,255,255,0.1); /* Keep consistent if button stays light on dark header */
+.dark-theme .theme-button {
+   border: 1px solid rgba(0,0,0,0.3); /* حدود أغمق في الثيم الداكن إذا كان الزر فاتح */
 }
 
 
@@ -152,14 +114,17 @@ body.dark-theme .theme-button:hover {
 }
 .project-card {
   background-color: var(--surface-light);
-  /* color: var(--text-light); Default from body */
+  color: var(--text-light); 
   border-radius: 8px;
   padding: 15px;
   box-shadow: var(--shadow);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
+.dark-theme .project-card {
+  background-color: var(--surface-dark);
+  color: var(--text-dark);
+}
 .project-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
@@ -171,48 +136,61 @@ body.dark-theme .theme-button:hover {
   border: none;
   color: var(--primary-color);
   cursor: pointer;
-  margin-right: 10px; /* RTL: use margin-left if icons are first */
+  margin-right: 10px;
   font-size: 0.9em;
 }
 .project-actions button:hover { color: var(--secondary-color); }
 
-.initial-footer { 
+.initial-footer { /* Footer for the initial screen */
   padding: 20px 15px;
   text-align: center;
-  margin-top: auto; 
-  /* background-color: var(--bg-light); Default from body */
+  margin-top: auto; /* Pushes footer to bottom if content is short */
+  background-color: var(--bg-light); /* Match body background if not a distinct bar */
+}
+.dark-theme .initial-footer {
+    background-color: var(--bg-dark);
 }
 
-
 .button-primary-action {
-  background-color: var(--primary-color); 
-  color: white; 
-  border: none; 
-  border-radius: 6px; 
-  padding: 12px 25px; 
-  font-size: 1.1em; 
+  background-color: #f0f0f0; 
+  color: var(--text-light); 
+  border: 1px solid #ccc; 
+  border-radius: 4px;
+  padding: 12px 25px; /* تكبير الزر قليلاً */
+  font-size: 1.1em; /* تكبير الخط قليلاً */
   font-family: var(--font-family-ui);
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: var(--shadow); 
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 .button-primary-action:hover {
-  background-color: var(--primary-color-darker);
+  background-color: #e0e0e0;
+  border-color: #bbb;
 }
-
+.dark-theme .button-primary-action {
+  background-color: var(--surface-dark); /* استخدام لون السطح في الثيم الداكن */
+  color: var(--text-dark);
+  border-color: var(--separator-dark);
+}
+.dark-theme .button-primary-action:hover {
+  background-color: #3a3a3a; /* أغمق قليلاً عند المرور */
+}
 
 .copyright {
   font-size: 0.8em;
-  margin-top: 20px; 
+  color: var(--text-light); 
+  margin-top: 20px; /* مسافة أكبر فوق الحقوق */
 }
+.dark-theme .copyright { color: var(--text-dark); }
 
-/* --- Editor Screen --- */
+
+/* --- Editor Screen (نفس التنسيقات السابقة) --- */
 #editor-screen {
-  display: none; /* Starts hidden */
+  display: flex; /* سيبقى flex عند الظهور */
   flex-direction: column;
   height: 100vh;
   overflow: hidden; 
@@ -227,15 +205,11 @@ body.dark-theme .theme-button:hover {
   box-shadow: var(--shadow);
   flex-shrink: 0;
 }
-body.dark-theme .editor-header { /* Ensure editor header also darkens */
-    background-color: var(--primary-color-darker);
-}
-
 .editor-header h2 { margin: 0; font-size: 1.2em; flex-grow: 1; }
-.icon-button, .action-button {
+.icon-button, .action-button { /* .theme-button now handles theme toggles */
   background: transparent;
   border: none;
-  color: white; /* Icons and buttons on header are white */
+  color: white;
   font-size: 1.3em;
   cursor: pointer;
   padding: 8px;
@@ -254,10 +228,12 @@ body.dark-theme .editor-header { /* Ensure editor header also darkens */
   justify-content: center;
   align-items: center;
   padding: 10px;
-  /* background-color: var(--bg-light); Default from body */
+  background-color: var(--bg-light); 
   overflow: hidden; 
 }
-
+.dark-theme #editor-main-area {
+  background-color: var(--bg-dark);
+}
 
 #video-preview-container {
   width: 90%; 
@@ -283,42 +259,41 @@ body.dark-theme .editor-header { /* Ensure editor header also darkens */
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
-    padding: 20px; 
+    padding: 20px; /* زيادة الحشو الداخلي */
     box-sizing: border-box;
     text-align: center;
 }
 
-.preview-text-no-shadow {
-    text-shadow: none !important;
-}
-
 #preview-surah-title {
   color: #FFFFFF; 
-  font-size: 2em; 
-  margin-bottom: 15px; 
+  font-size: 2em; /* تكبير خط عنوان السورة قليلاً */
+  margin-bottom: 15px; /* زيادة المسافة */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
 #preview-ayah-text {
-  font-family: var(--font-family-quran); 
-  font-size: 2.5em; 
+  font-family: var(--font-family-quran);
+  font-size: 2.5em; /* هذا حجم أساسي، يمكن تعديله من شريط الأدوات */
   line-height: 1.8;
   color: #FFFFFF; 
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
   padding: 10px;
-  max-height: 65%; 
+  max-height: 65%; /* تعديل الارتفاع الأقصى */
   overflow-y: auto; 
   background-color: rgba(0,0,0,0); 
   border-radius: 5px;
-  width: 90%; 
+  width: 90%; /* تحديد عرض للنص ليتوسط بشكل أفضل */
 }
 .translation-text-overlay {
   font-family: var(--font-family-ui);
-  font-size: 1em; 
+  font-size: 1em; /* تعديل حجم خط الترجمة */
   color: #DDDDDD;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   margin-top: 10px;
   padding: 5px;
   max-height: 25%;
   overflow-y: auto;
-  width: 85%; 
+  width: 85%; /* تحديد عرض للترجمة */
 }
 
 
@@ -329,68 +304,59 @@ body.dark-theme .editor-header { /* Ensure editor header also darkens */
   padding: 5px 0;
   overflow-x: auto; 
   flex-shrink: 0;
-  direction: ltr; 
+  direction: ltr; /* Keep toolbar LTR for icon/text order */
 }
-
+.dark-theme #editor-toolbar {
+  background-color: var(--surface-dark);
+}
 .toolbar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; 
-  direction: rtl; 
-  flex: 1; 
-  min-width: 80px; 
+  direction: rtl; /* Set content inside section to RTL */
 }
 .toolbar-tab-button {
   background: none;
   border: none;
-  /* color: var(--text-light); Default from body */
-  padding: 8px 5px; 
+  color: var(--text-light); 
+  padding: 10px 15px;
   cursor: pointer;
   font-family: var(--font-family-ui);
-  /* font-size: 0.9em; Handled by span */
+  font-size: 0.9em;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; 
-  gap: 3px; 
-  width: 100%; 
-  text-align: center; 
+  gap: 4px;
+  min-width: 70px; 
 }
-
-.toolbar-tab-button i { 
-    font-size: 1.4em; 
-    margin-bottom: 0; 
-}
-.toolbar-tab-button span { 
-    font-size: 0.75em; 
-    white-space: nowrap; 
-}
+.dark-theme .toolbar-tab-button { color: var(--text-dark); }
+.toolbar-tab-button i { font-size: 1.5em; margin-bottom: 3px; }
+.toolbar-tab-button span { font-size: 0.8em; }
 .toolbar-section.active .toolbar-tab-button {
   color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
 }
-.toolbar-section.active .toolbar-tab-button i,
-.toolbar-section.active .toolbar-tab-button span {
-    color: var(--primary-color); 
-}
-
-
 .toolbar-controls {
   position: fixed;
-  bottom: 60px;  
+  bottom: 65px; 
   left: 0;
   right: 0;
   background-color: var(--surface-light);
+  color: var(--text-light); 
   padding: 15px;
   border-top: 1px solid var(--separator-light);
   box-shadow: 0 -3px 6px rgba(0,0,0,0.1);
-  display: none; /* Start hidden, shown by JS */
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
-  max-height: 45vh; 
+  max-height: 40vh; 
   overflow-y: auto;
 }
-
+.dark-theme .toolbar-controls {
+  background-color: var(--surface-dark);
+  color: var(--text-dark);
+  border-top: 1px solid var(--separator-dark);
+}
 .toolbar-controls div { display: flex; flex-direction: column; }
 .toolbar-controls label { margin-bottom: 5px; font-size: 0.9em; }
 .toolbar-controls select, .toolbar-controls input[type="file"],
@@ -399,19 +365,18 @@ body.dark-theme .editor-header { /* Ensure editor header also darkens */
   padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--separator-light);
-  background-color: var(--surface-light); /* Lighter background for inputs */
+  background-color: var(--bg-light); 
   color: var(--text-light);
   width: 100%;
   box-sizing: border-box;
 }
-body.dark-theme .toolbar-controls select,
-body.dark-theme .toolbar-controls input[type="file"],
-body.dark-theme .toolbar-controls input[type="color"],
-body.dark-theme .toolbar-controls input[type="range"],
-body.dark-theme .toolbar-controls input[type="number"] {
-    background-color: var(--surface-dark); /* Darker input background for dark theme */
+.dark-theme .toolbar-controls select, .dark-theme .toolbar-controls input[type="file"],
+.dark-theme .toolbar-controls input[type="color"], .dark-theme .toolbar-controls input[type="range"],
+.dark-theme .toolbar-controls input[type="number"] {
+  border: 1px solid var(--separator-dark);
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
 }
-
 
 .control-button, .main-button {
   padding: 10px 15px;
@@ -424,7 +389,7 @@ body.dark-theme .toolbar-controls input[type="number"] {
   transition: background-color 0.2s;
 }
 .control-button:hover, .main-button:hover { background: var(--primary-color-darker); }
-.control-button i, .main-button i { margin-left: 8px; /* RTL: margin-right */ }
+.control-button i, .main-button i { margin-left: 8px; } /* RTL: should be margin-right if icon is first */
 
 
 #ai-bg-suggestions {
@@ -432,7 +397,7 @@ body.dark-theme .toolbar-controls input[type="number"] {
     gap: 10px;
     margin-top: 10px;
     overflow-x: auto;
-    padding-bottom: 10px; /* For scrollbar visibility */
+    padding-bottom: 10px;
 }
 #ai-bg-suggestions img {
     width: 100px;
@@ -446,6 +411,7 @@ body.dark-theme .toolbar-controls input[type="number"] {
     border-color: var(--secondary-color);
 }
 
+/* Text Effects */
 .typewriter-char {
     opacity: 0;
     animation: typechar 0.1s forwards;
@@ -454,12 +420,14 @@ body.dark-theme .toolbar-controls input[type="number"] {
     to { opacity: 1; }
 }
 
+/* Spinner */
 .spinner-overlay {
+  /* display: none;  Controlled by JS */
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7); /* Darker overlay */
+  background: rgba(0, 0, 0, 0.6);
   z-index: 10000; 
-  display: none; /* Controlled by JS */
+  display: flex; 
   align-items: center;
   justify-content: center;
 }
@@ -475,5 +443,6 @@ body.dark-theme .toolbar-controls input[type="number"] {
   to { transform: rotate(360deg); }
 }
 
+/* Export progress */
 #export-progress { margin-top: 10px; text-align: center;}
 #export-progress-bar { width: 80%; }
