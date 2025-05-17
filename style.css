@@ -1,131 +1,252 @@
-/* ... (بداية ملف style.css كما هي) ... */
+:root {
+  /* ... (نفس متغيرات الألوان كما في الرد السابق) ... */
+  --primary-color: #00796b; 
+  --primary-color-darker: #004d40;
+  --secondary-color: #ffab40;
+  
+  --bg-color-dark: #121212; 
+  --surface-color-dark: #1e1e1e; 
+  --surface-color-dark-lighter: #2a2a2a; 
+  --text-color-dark: #e0e0e0; 
+  --text-color-dark-secondary: #b0b0b0; 
+  --separator-color-dark: #3a3a3a;
+  --accent-color-dark: var(--primary-color); 
+  --button-bg-dark: #333333;
+  --button-hover-bg-dark: #444444;
 
-/* --- Editor Screen (New Structure) --- */
-/* ... (تنسيقات #editor-screen, #editor-top-bar, #editor-preview-area كما هي) ... */
+  --bg-color-light: #f4f6f8;
+  --surface-color-light: #ffffff;
+  --text-color-light: #212121;
+  --separator-color-light: #e0e0e0;
+  --accent-color-light: var(--primary-color);
+
+  --font-family-quran: 'Amiri Quran', serif;
+  --font-family-ui: 'Tajawal', sans-serif;
+  --shadow: 0 2px 5px rgba(0,0,0,0.2);
+  --shadow-strong: 0 4px 10px rgba(0,0,0,0.3);
+
+  --current-bg-color: var(--bg-color-dark);
+  --current-surface-color: var(--surface-color-dark);
+  --current-surface-lighter: var(--surface-color-dark-lighter);
+  --current-text-color: var(--text-color-dark);
+  --current-text-secondary-color: var(--text-color-dark-secondary);
+  --current-separator-color: var(--separator-color-dark);
+  --current-accent-color: var(--accent-color-dark);
+  --current-button-bg: var(--button-bg-dark);
+  --current-button-hover-bg: var(--button-hover-bg-dark);
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* منع تمرير الصفحة الرئيسية */
+  font-family: var(--font-family-ui);
+  background-color: var(--current-bg-color);
+  color: var(--current-text-color);
+}
+
+.light-theme {
+  --current-bg-color: var(--bg-color-light);
+  --current-surface-color: var(--surface-color-light);
+  --current-surface-lighter: #f0f0f0; 
+  --current-text-color: var(--text-color-light);
+  --current-text-secondary-color: #555555;
+  --current-separator-color: var(--separator-color-light);
+  --current-accent-color: var(--accent-color-light);
+  --current-button-bg: #e0e0e0;
+  --current-button-hover-bg: #d0d0d0;
+}
+/* لا حاجة لـ .light-theme body {} إذا تم تطبيق المتغيرات على body مباشرة */
+
+#app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  width: 100%;
+  max-height: 100vh; /* التأكد من عدم تجاوز ارتفاع الشاشة */
+  box-sizing: border-box;
+}
+
+/* --- Initial Screen --- */
+#initial-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  width: 100%;
+  box-sizing: border-box;
+}
+#initial-screen main {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--current-bg-color);
+  box-sizing: border-box;
+}
+.app-header { /* ... (كما هو، لكن تأكد من أنه لا يسبب تمددًا) ... */ }
+/* ... (بقية تنسيقات الشاشة الرئيسية كما هي، مع التأكد من عدم وجود width: 100vw غير ضروري) ... */
+
+
+/* --- Editor Screen (New Structure with constraints) --- */
+#editor-screen {
+  display: flex; /* سيبقى flex عند الظهور */
+  flex-direction: column;
+  height: 100%; 
+  width: 100%; /* شغل عرض الشاشة بالكامل */
+  overflow: hidden; /* منع التمرير على مستوى شاشة المحرر */
+  background-color: var(--current-bg-color);
+  box-sizing: border-box;
+}
+
+#editor-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--current-surface-color);
+  border-bottom: 1px solid var(--current-separator-color);
+  flex-shrink: 0; /* منع الانكماش */
+  width: 100%; /* شغل العرض الكامل */
+  box-sizing: border-box; /* ليشمل padding في العرض */
+}
+#editor-top-bar h2 { margin: 0; font-size: 1.1em; font-weight: 500; color: var(--current-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; text-align: center; }
+.top-bar-btn { background: none; border: none; color: var(--current-text-color); font-size: 1.3em; padding: 8px; border-radius: 50%; cursor: pointer; flex-shrink: 0; }
+.top-bar-btn.primary { background-color: var(--current-accent-color); color: white; font-size: 0.9em; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
+/* ... (hover states for top-bar-btn) ... */
+
+#editor-preview-area {
+  flex-grow: 1; /* دع منطقة المعاينة تأخذ المساحة المتبقية */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  overflow: hidden; /* منع تمرير منطقة المعاينة نفسها */
+  width: 100%;
+  box-sizing: border-box;
+}
+#video-preview-container { 
+  width: 100%; 
+  max-width: 90vw; /* حد أقصى لعرض المعاينة بالنسبة لعرض الشاشة */
+  max-height: 45vh; /* حد أقصى لارتفاع المعاينة (مهم للهواتف) */
+  aspect-ratio: 16 / 9;
+  background-color: #000000; 
+  border-radius: 8px; /* أصغر قليلاً */
+  box-shadow: var(--shadow-strong);
+  position: relative; 
+  overflow: hidden; 
+}
+/* ... (تنسيقات #video-preview-canvas و #preview-overlay-content كما هي) ... */
 
 #editor-dynamic-controls-container {
   background-color: var(--current-surface-color);
-  padding: 15px 20px; /* زيادة الحشو الجانبي قليلاً */
-  overflow-y: auto;
-  max-height: 40vh; /* زيادة المساحة المتاحة للوحة التحكم قليلاً */
+  padding: 10px 15px; /* تقليل الحشو قليلاً */
+  overflow-y: auto; /* السماح بالتمرير إذا كانت الخيارات كثيرة */
+  /* max-height: 30vh;  قد تكون هذه هي المشكلة، دع flex يحدد الارتفاع */
+  min-height: 150px; /* ارتفاع أدنى لضمان ظهور شيء */
+  flex-shrink: 0; /* منع الانكماش */
   border-top: 1px solid var(--current-separator-color);
-  flex-shrink: 0;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1); 
+  width: 100%;
+  box-sizing: border-box;
+  /* Let's control height via flex properties of parent #editor-screen */
 }
 .control-panel {
   display: none; 
-  gap: 18px; /* زيادة المسافة بين مجموعات التحكم */
+  gap: 12px; /* تقليل المسافة */
   flex-direction: column;
+  padding-bottom: 10px; /* مسافة سفلية داخل اللوحة */
 }
-.control-panel.active-panel {
-  display: flex; 
-}
-.control-panel h3 { /* عنوان اللوحة مثل "إعدادات القرآن" */
-  font-size: 0.9em; /* تصغير الخط قليلاً */
-  color: var(--current-accent-color);
-  margin-top: 0;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--current-separator-color);
-  text-align: center; /* توسيط العنوان */
-  font-weight: bold;
-}
-.control-panel > div {
-  margin-bottom: 12px; /* تناسق المسافات */
-}
-.control-panel label {
-  display: block;
-  font-size: 0.85em; /* تصغير الخط */
-  margin-bottom: 6px;
-  color: var(--current-text-secondary-color);
-}
+.control-panel.active-panel { display: flex; }
+.control-panel h3 { font-size: 0.9em; color: var(--current-accent-color); margin-top: 0; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid var(--current-separator-color); text-align: center; font-weight: 500; }
+.control-panel > div { margin-bottom: 8px; }
+.control-panel label { font-size: 0.8em; margin-bottom: 4px; color: var(--current-text-secondary-color); }
 .control-panel select,
 .control-panel input[type="number"],
 .control-panel input[type="range"],
 .control-panel input[type="file"],
 .control-panel input[type="color"] {
   width: 100%;
-  padding: 12px; /* زيادة الحشو الداخلي للمدخلات */
-  background-color: var(--current-bg-color); /* خلفية أغمق للمدخلات */
+  padding: 10px; 
+  background-color: var(--current-bg-color); 
   color: var(--current-text-color);
   border: 1px solid var(--current-separator-color);
-  border-radius: 8px;
+  border-radius: 6px; /* أصغر قليلاً */
   box-sizing: border-box;
-  font-size: 0.9em;
+  font-size: 0.85em;
 }
-.control-panel input[type="color"] {
-  height: 48px; 
-}
-
-/* لتعديل ترتيب "من آية" و "إلى آية" بصريًا */
-.ayah-range-inputs {
-  display: flex;
-  gap: 15px; /* زيادة المسافة بين مدخلي الآيات */
-  /* لإجبار الترتيب البصري، يمكننا استخدام order إذا كان flex direction row */
-  /* أو ببساطة الاعتماد على ترتيب HTML وجعل المستخدم يتكيف معه إذا كان RTL هو الأساس */
-}
-.ayah-range-inputs > div {
-  flex: 1;
-}
-/* إذا أردت عكس الترتيب البصري فقط لـ RTL: */
-html[dir="rtl"] .ayah-range-inputs > div:first-child {
-  /* هذا هو "من آية" في HTML */
-  /* order: 2;  قد يسبب ارتباكًا مع tab navigation */
-}
-html[dir="rtl"] .ayah-range-inputs > div:last-child {
-  /* هذا هو "إلى آية" في HTML */
-  /* order: 1; */
-}
-/* الأفضل هو الحفاظ على الترتيب المنطقي لـ RTL وجعل "من آية" على اليمين */
-
+.control-panel input[type="color"] { height: 40px; }
+.ayah-range-inputs { display: flex; gap: 10px; }
+.ayah-range-inputs > div { flex: 1; }
 
 /* ... (تنسيقات .control-button, .main-button, #ai-bg-suggestions كما هي) ... */
-
 
 #editor-bottom-bar {
   background-color: var(--current-surface-color);
   border-top: 1px solid var(--current-separator-color);
-  padding-top: 8px; /* مسافة علوية قبل الشريط الزمني */
+  padding-top: 5px; 
   padding-bottom: 5px;
   flex-shrink: 0;
-  box-shadow: 0 -3px 8px rgba(0,0,0,0.2);
+  width: 100%;
+  box-sizing: border-box;
 }
 #timeline-placeholder {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* توزيع أفضل للعلامات */
-  padding: 0px 20px 8px 20px; /* تعديل الحشو */
-  font-size: 0.75em;
+  justify-content: space-between; 
+  padding: 0px 15px 5px 15px; 
+  font-size: 0.7em;
   color: var(--current-text-secondary-color);
-  height: 20px; 
+  height: 15px; /* تقليل ارتفاع الشريط الزمني */
 }
-.timeline-tick {
-  position: relative; /* لإضافة الخطوط العمودية الصغيرة */
-}
-.timeline-tick::before { /* الخط العمودي الصغير تحت كل رقم ثانية */
-  content: '';
-  position: absolute;
-  bottom: -5px; /* أسفل النص قليلاً */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1px;
-  height: 4px;
-  background-color: var(--current-text-secondary-color);
-}
-.timeline-track {
-  height: 1px; /* خط أنحف */
-  background-color: var(--current-separator-color);
-  flex-grow: 1;
-  margin: 0 5px; /* مسافة حول الخط الأفقي */
-}
+/* ... (تنسيقات .timeline-tick و .timeline-track كما هي) ... */
 
 #main-actions-toolbar {
   display: flex;
   justify-content: space-around; 
   align-items: center;
-  padding: 8px 10px; /* زيادة الحشو الجانبي قليلاً */
+  padding: 5px; 
 }
-/* ... (بقية تنسيقات .action-tool-btn كما هي) ... */
+.action-tool-btn {
+  background: none; border: none; color: var(--current-text-secondary-color);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 4px; cursor: pointer; font-size: 0.7em; /* أصغر */
+  flex: 1; max-width: 65px; border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.action-tool-btn i { font-size: 1.4em; margin-bottom: 2px; }
+/* ... (تنسيقات .action-tool-btn.active و :hover كما هي) ... */
 
 
-/* ... (تنسيقات Spinner, Export progress, Responsive adjustments, Helper for RGB كما هي) ... */
+/* Spinner and Export Progress (Ensure they are centered and don't cause overflow) */
+.spinner-overlay {
+  position: fixed; /* Use fixed to cover viewport */
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+}
+/* ... (بقية تنسيقات Spinner و Export progress كما هي) ... */
+
+/* لضمان عدم تجاوز النص لعرض الحاوية في كل مكان */
+* {
+  word-break: break-word; /* قد يكون هذا قويًا جدًا، استخدم بحذر */
+  /* أو overflow-wrap: break-word; وهو أفضل */
+  overflow-wrap: break-word;
+}
+
+body.dark-theme { /* للتأكد من تطبيق النمط الداكن بشكل صحيح */
+  --current-bg-color: var(--bg-color-dark);
+  --current-surface-color: var(--surface-color-dark);
+  --current-surface-lighter: var(--surface-color-dark-lighter);
+  --current-text-color: var(--text-color-dark);
+  --current-text-secondary-color: var(--text-color-dark-secondary);
+  --current-separator-color: var(--separator-color-dark);
+  --current-accent-color: var(--accent-color-dark);
+  --current-button-bg: var(--button-bg-dark);
+  --current-button-hover-bg: var(--button-hover-bg-dark);
+}
+body.light-theme {
+    /* تعريفات الثيم الفاتح كما كانت */
+}
