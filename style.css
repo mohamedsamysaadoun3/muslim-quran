@@ -1,252 +1,369 @@
-:root {
-  /* ... (نفس متغيرات الألوان كما في الرد السابق) ... */
-  --primary-color: #00796b; 
-  --primary-color-darker: #004d40;
-  --secondary-color: #ffab40;
-  
-  --bg-color-dark: #121212; 
-  --surface-color-dark: #1e1e1e; 
-  --surface-color-dark-lighter: #2a2a2a; 
-  --text-color-dark: #e0e0e0; 
-  --text-color-dark-secondary: #b0b0b0; 
-  --separator-color-dark: #3a3a3a;
-  --accent-color-dark: var(--primary-color); 
-  --button-bg-dark: #333333;
-  --button-hover-bg-dark: #444444;
+/* ... (الأنماط الموجودة من الأعلى) ... */
 
-  --bg-color-light: #f4f6f8;
-  --surface-color-light: #ffffff;
-  --text-color-light: #212121;
-  --separator-color-light: #e0e0e0;
-  --accent-color-light: var(--primary-color);
-
-  --font-family-quran: 'Amiri Quran', serif;
-  --font-family-ui: 'Tajawal', sans-serif;
-  --shadow: 0 2px 5px rgba(0,0,0,0.2);
-  --shadow-strong: 0 4px 10px rgba(0,0,0,0.3);
-
-  --current-bg-color: var(--bg-color-dark);
-  --current-surface-color: var(--surface-color-dark);
-  --current-surface-lighter: var(--surface-color-dark-lighter);
-  --current-text-color: var(--text-color-dark);
-  --current-text-secondary-color: var(--text-color-dark-secondary);
-  --current-separator-color: var(--separator-color-dark);
-  --current-accent-color: var(--accent-color-dark);
-  --current-button-bg: var(--button-bg-dark);
-  --current-button-hover-bg: var(--button-hover-bg-dark);
+/* --- Editor Screen NEW LAYOUT --- */
+#editor-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* منع تمرير الصفحة الرئيسية */
-  font-family: var(--font-family-ui);
+.editor-top-bar { /* Was .editor-header */
+  background-color: var(--primary-color);
+  color: white;
+  padding: 8px 15px; /* Reduced padding */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduced gap */
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+  height: 50px; /* Fixed height for top bar */
+  box-sizing: border-box;
+}
+.editor-top-bar .icon-button { /* Back button */
+    font-size: 1.2em;
+    padding: 6px;
+}
+.editor-top-bar h2 { /* Project title */
+    margin: 0;
+    font-size: 1.1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.editor-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto; /* Pushes to the right in RTL */
+}
+.editor-top-actions .action-button { /* Save button */
+    font-size: 0.85em;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.editor-top-actions .theme-button {
+    font-size: 1em;
+    padding: 5px 8px;
+}
+
+
+#editor-main-area-new { /* Replaces editor-main-area */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column; /* Stack preview and timeline/controls */
+  justify-content: center; /* Center video preview vertically if space allows */
+  align-items: center;
+  padding: 10px;
   background-color: var(--current-bg-color);
+  overflow: hidden;
+  position: relative; /* For positioning control panels */
+}
+
+#video-preview-container {
+  width: 100%; /* Take full width of its parent */
+  max-width: 70vh; /* Max width based on viewport height for better aspect ratio */
+  aspect-ratio: 16 / 9;
+  background-color: #000000;
+  border-radius: 8px;
+  box-shadow: var(--shadow-strong);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 15px; /* Space between preview and timeline/controls */
+}
+/* #video-preview-canvas and overlay styles remain largely the same */
+
+
+#playback-timeline-section {
+  width: 100%;
+  max-width: 600px; /* Max width for timeline and controls */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-top: auto; /* Pushes to bottom of its flex container if preview is smaller */
+}
+
+#timeline-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
   color: var(--current-text-color);
 }
-
-.light-theme {
-  --current-bg-color: var(--bg-color-light);
-  --current-surface-color: var(--surface-color-light);
-  --current-surface-lighter: #f0f0f0; 
-  --current-text-color: var(--text-color-light);
-  --current-text-secondary-color: #555555;
-  --current-separator-color: var(--separator-color-light);
-  --current-accent-color: var(--accent-color-light);
-  --current-button-bg: #e0e0e0;
-  --current-button-hover-bg: #d0d0d0;
-}
-/* لا حاجة لـ .light-theme body {} إذا تم تطبيق المتغيرات على body مباشرة */
-
-#app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
-  width: 100%;
-  max-height: 100vh; /* التأكد من عدم تجاوز ارتفاع الشاشة */
-  box-sizing: border-box;
-}
-
-/* --- Initial Screen --- */
-#initial-screen {
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
-  width: 100%;
-  box-sizing: border-box;
-}
-#initial-screen main {
+#timeline-container input[type="range"] {
   flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background-color: var(--current-bg-color);
-  box-sizing: border-box;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--current-separator-color);
+  border-radius: 5px;
+  outline: none;
 }
-.app-header { /* ... (كما هو، لكن تأكد من أنه لا يسبب تمددًا) ... */ }
-/* ... (بقية تنسيقات الشاشة الرئيسية كما هي، مع التأكد من عدم وجود width: 100vw غير ضروري) ... */
+#timeline-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+#timeline-container input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+#current-time-display, #total-time-display {
+  font-size: 0.85em;
+  min-width: 35px;
+  text-align: center;
+}
 
+#playback-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px; /* Spacing between playback buttons */
+}
+.playback-icon-button {
+  background: none;
+  border: none;
+  color: var(--current-text-color);
+  font-size: 1.3em;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+.playback-icon-button:hover {
+  background-color: var(--current-highlight-bg-color);
+  color: var(--primary-color);
+}
+.playback-icon-button.large {
+  font-size: 2em;
+  padding: 10px;
+  color: var(--primary-color); /* Make play button prominent */
+}
+.playback-icon-button.large:hover {
+  background-color: var(--primary-color-darker);
+  color: white;
+}
 
-/* --- Editor Screen (New Structure with constraints) --- */
-#editor-screen {
-  display: flex; /* سيبقى flex عند الظهور */
+/* Main Bottom Tab Bar */
+#main-bottom-tab-bar {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--current-surface-color);
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  padding: 5px 0;
+  flex-shrink: 0;
+  height: 60px; /* Fixed height for tab bar */
+  box-sizing: border-box;
+  border-top: 1px solid var(--current-separator-color);
+  z-index: 200; /* Above control panels that might slide down */
+}
+.main-tab-button {
+  background: none;
+  border: none;
+  color: var(--current-text-color);
+  opacity: 0.7;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: var(--font-family-ui);
+  font-size: 0.8em;
+  display: flex;
   flex-direction: column;
-  height: 100%; 
-  width: 100%; /* شغل عرض الشاشة بالكامل */
-  overflow: hidden; /* منع التمرير على مستوى شاشة المحرر */
-  background-color: var(--current-bg-color);
-  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 65px;
+  text-align: center;
+  transition: color 0.2s, opacity 0.2s, border-top-color 0.2s;
+  border-top: 3px solid transparent;
+}
+.main-tab-button i {
+  font-size: 1.6em; /* Larger icons */
+  margin-bottom: 0px;
+}
+.main-tab-button.active {
+  color: var(--primary-color);
+  opacity: 1;
+  border-top-color: var(--primary-color);
 }
 
-#editor-top-bar {
+/* Control Panels Styling */
+#active-control-panels-container {
+  position: absolute; /* Changed from fixed to absolute */
+  bottom: 60px; /* Height of the tab bar */
+  left: 0;
+  right: 0;
+  z-index: 150; /* Below tab bar if it needs to overlap, but panels should be above usually */
+  /* max-height: 0; */ /* Controlled by JS or individual panel styles */
+  overflow: hidden; /* To manage transitions */
+  display: flex; /* To allow panels to be managed if multiple are somehow visible */
+  pointer-events: none; /* Allow clicks to pass through if no panel is active */
+}
+
+.control-panel {
+  background-color: var(--current-surface-color);
+  color: var(--current-text-color);
+  border-top: 1px solid var(--current-separator-color);
+  box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
+  width: 100%;
+  max-height: 50vh; /* Max height for panels */
+  overflow-y: auto;
+  display: none; /* Hidden by default */
+  flex-direction: column;
+  position: absolute; /* Each panel is positioned absolutely within the container */
+  bottom: 0; /* Start at the bottom of its container */
+  left:0;
+  right:0;
+  padding-bottom: 10px; /* Space at the bottom of scroll */
+  pointer-events: auto; /* Enable pointer events for the active panel */
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  transform: translateY(100%); /* Start off-screen */
+  opacity: 0;
+}
+.control-panel.visible {
+  display: flex; /* Or block, depends on inner layout */
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
-  background-color: var(--current-surface-color);
+  padding: 12px 15px;
   border-bottom: 1px solid var(--current-separator-color);
-  flex-shrink: 0; /* منع الانكماش */
-  width: 100%; /* شغل العرض الكامل */
-  box-sizing: border-box; /* ليشمل padding في العرض */
+  background-color: var(--current-surface-color); /* Ensure it has a background */
+  position: sticky; /* Keep header visible on scroll */
+  top: 0;
+  z-index: 10;
 }
-#editor-top-bar h2 { margin: 0; font-size: 1.1em; font-weight: 500; color: var(--current-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; text-align: center; }
-.top-bar-btn { background: none; border: none; color: var(--current-text-color); font-size: 1.3em; padding: 8px; border-radius: 50%; cursor: pointer; flex-shrink: 0; }
-.top-bar-btn.primary { background-color: var(--current-accent-color); color: white; font-size: 0.9em; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
-/* ... (hover states for top-bar-btn) ... */
-
-#editor-preview-area {
-  flex-grow: 1; /* دع منطقة المعاينة تأخذ المساحة المتبقية */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  overflow: hidden; /* منع تمرير منطقة المعاينة نفسها */
-  width: 100%;
-  box-sizing: border-box;
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: var(--primary-color);
 }
-#video-preview-container { 
-  width: 100%; 
-  max-width: 90vw; /* حد أقصى لعرض المعاينة بالنسبة لعرض الشاشة */
-  max-height: 45vh; /* حد أقصى لارتفاع المعاينة (مهم للهواتف) */
-  aspect-ratio: 16 / 9;
-  background-color: #000000; 
-  border-radius: 8px; /* أصغر قليلاً */
-  box-shadow: var(--shadow-strong);
-  position: relative; 
-  overflow: hidden; 
-}
-/* ... (تنسيقات #video-preview-canvas و #preview-overlay-content كما هي) ... */
-
-#editor-dynamic-controls-container {
-  background-color: var(--current-surface-color);
-  padding: 10px 15px; /* تقليل الحشو قليلاً */
-  overflow-y: auto; /* السماح بالتمرير إذا كانت الخيارات كثيرة */
-  /* max-height: 30vh;  قد تكون هذه هي المشكلة، دع flex يحدد الارتفاع */
-  min-height: 150px; /* ارتفاع أدنى لضمان ظهور شيء */
-  flex-shrink: 0; /* منع الانكماش */
-  border-top: 1px solid var(--current-separator-color);
-  width: 100%;
-  box-sizing: border-box;
-  /* Let's control height via flex properties of parent #editor-screen */
-}
-.control-panel {
-  display: none; 
-  gap: 12px; /* تقليل المسافة */
-  flex-direction: column;
-  padding-bottom: 10px; /* مسافة سفلية داخل اللوحة */
-}
-.control-panel.active-panel { display: flex; }
-.control-panel h3 { font-size: 0.9em; color: var(--current-accent-color); margin-top: 0; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid var(--current-separator-color); text-align: center; font-weight: 500; }
-.control-panel > div { margin-bottom: 8px; }
-.control-panel label { font-size: 0.8em; margin-bottom: 4px; color: var(--current-text-secondary-color); }
-.control-panel select,
-.control-panel input[type="number"],
-.control-panel input[type="range"],
-.control-panel input[type="file"],
-.control-panel input[type="color"] {
-  width: 100%;
-  padding: 10px; 
-  background-color: var(--current-bg-color); 
+.panel-action-button {
+  background: none;
+  border: none;
   color: var(--current-text-color);
-  border: 1px solid var(--current-separator-color);
-  border-radius: 6px; /* أصغر قليلاً */
-  box-sizing: border-box;
-  font-size: 0.85em;
+  font-size: 1.2em;
+  padding: 5px;
+  cursor: pointer;
 }
-.control-panel input[type="color"] { height: 40px; }
-.ayah-range-inputs { display: flex; gap: 10px; }
-.ayah-range-inputs > div { flex: 1; }
+.panel-action-button.confirm-panel-btn { color: var(--primary-color); }
+.panel-action-button.close-panel-btn { color: #888; }
 
-/* ... (تنسيقات .control-button, .main-button, #ai-bg-suggestions كما هي) ... */
 
-#editor-bottom-bar {
-  background-color: var(--current-surface-color);
-  border-top: 1px solid var(--current-separator-color);
-  padding-top: 5px; 
-  padding-bottom: 5px;
-  flex-shrink: 0;
+.panel-content {
+  padding: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 15px 20px; /* Row and column gap */
+}
+.panel-content > div, .panel-content > h4 { /* Direct children, for better control */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between label and input in a group */
+}
+.panel-content h4 {
+    grid-column: 1 / -1; /* Make h4 span all columns */
+    margin-top: 10px;
+    margin-bottom: 0px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--current-separator-color);
+    font-size: 1em;
+    color: var(--primary-color);
+}
+.panel-content hr.panel-divider {
+    grid-column: 1 / -1;
+    border: none;
+    border-top: 1px solid var(--current-separator-color);
+    margin: 10px 0;
+}
+
+.panel-content label { margin-bottom: 0; font-size: 0.9em; font-weight: 500; }
+.panel-content select, .panel-content input[type="file"],
+.panel-content input[type="color"], .panel-content input[type="range"],
+.panel-content input[type="number"] {
+  padding: 8px 10px; /* Slightly reduced padding */
+  border-radius: 4px;
+  border: 1px solid var(--current-separator-color);
+  background-color: var(--current-bg-color);
+  color: var(--current-text-color);
   width: 100%;
   box-sizing: border-box;
+  font-family: var(--font-family-ui);
+  font-size: 0.95em;
 }
-#timeline-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; 
-  padding: 0px 15px 5px 15px; 
-  font-size: 0.7em;
-  color: var(--current-text-secondary-color);
-  height: 15px; /* تقليل ارتفاع الشريط الزمني */
-}
-/* ... (تنسيقات .timeline-tick و .timeline-track كما هي) ... */
+.panel-content input[type="color"] { height: 38px; }
+.panel-content input[type="range"] { padding: 0; }
 
-#main-actions-toolbar {
-  display: flex;
-  justify-content: space-around; 
-  align-items: center;
-  padding: 5px; 
+.voice-input-quran {
+    grid-column: 1 / -1; /* Span full width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
 }
-.action-tool-btn {
-  background: none; border: none; color: var(--current-text-secondary-color);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 4px; cursor: pointer; font-size: 0.7em; /* أصغر */
-  flex: 1; max-width: 65px; border-radius: 6px;
-  transition: background-color 0.2s, color 0.2s;
-}
-.action-tool-btn i { font-size: 1.4em; margin-bottom: 2px; }
-/* ... (تنسيقات .action-tool-btn.active و :hover كما هي) ... */
-
-
-/* Spinner and Export Progress (Ensure they are centered and don't cause overflow) */
-.spinner-overlay {
-  position: fixed; /* Use fixed to cover viewport */
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 10000; 
-  display: flex; 
-  align-items: center;
-  justify-content: center;
-}
-/* ... (بقية تنسيقات Spinner و Export progress كما هي) ... */
-
-/* لضمان عدم تجاوز النص لعرض الحاوية في كل مكان */
-* {
-  word-break: break-word; /* قد يكون هذا قويًا جدًا، استخدم بحذر */
-  /* أو overflow-wrap: break-word; وهو أفضل */
-  overflow-wrap: break-word;
+.voice-input-quran .control-button.small-mic {
+    padding: 8px 15px;
+    font-size: 0.9em;
 }
 
-body.dark-theme { /* للتأكد من تطبيق النمط الداكن بشكل صحيح */
-  --current-bg-color: var(--bg-color-dark);
-  --current-surface-color: var(--surface-color-dark);
-  --current-surface-lighter: var(--surface-color-dark-lighter);
-  --current-text-color: var(--text-color-dark);
-  --current-text-secondary-color: var(--text-color-dark-secondary);
-  --current-separator-color: var(--separator-color-dark);
-  --current-accent-color: var(--accent-color-dark);
-  --current-button-bg: var(--button-bg-dark);
-  --current-button-hover-bg: var(--button-hover-bg-dark);
+.audio-panel-preview-placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px;
+    background-color: var(--current-bg-color);
+    border-radius: 6px;
+    border: 1px dashed var(--current-separator-color);
 }
-body.light-theme {
-    /* تعريفات الثيم الفاتح كما كانت */
+.audio-panel-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.audio-panel-buttons .control-button {
+    flex-grow: 1; /* Make buttons take equal width if needed */
+}
+
+/* Remove old toolbar */
+#editor-toolbar { display: none; }
+
+/* Responsive adjustments for new layout */
+@media (max-width: 768px) {
+  .editor-top-bar h2 { font-size: 1em; }
+  .main-tab-button i { font-size: 1.4em; }
+  .main-tab-button span { font-size: 0.7em; }
+  #playback-controls { gap: 10px; }
+  .playback-icon-button { font-size: 1.2em; }
+  .playback-icon-button.large { font-size: 1.8em; }
+  .control-panel { max-height: 60vh; } /* Allow more height on smaller screens */
+  .panel-content { grid-template-columns: 1fr; } /* Stack controls in panels */
+}
+
+@media (max-width: 480px) {
+  .editor-top-bar { height: 45px; padding: 5px 10px; }
+  .editor-top-bar .icon-button { font-size: 1.1em; }
+  .editor-top-actions .action-button { font-size: 0.8em; padding: 6px 10px;}
+  #main-bottom-tab-bar { height: 55px; }
+  .main-tab-button { min-width: 55px; font-size: 0.65em; }
+  .main-tab-button i { font-size: 1.3em; }
+  #video-preview-container { margin-bottom: 10px;}
+  #playback-timeline-section { gap: 8px; }
+  #current-time-display, #total-time-display { font-size: 0.8em; }
 }
