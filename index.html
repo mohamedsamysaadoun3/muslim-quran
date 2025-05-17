@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Muslim Quran Video Creator</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <!-- تم تحديث رابط الخطوط ليشمل الخط الجديد -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Tajawal:wght@400;700&family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,7 +18,7 @@
 <body class="light-theme">
 
   <div id="app-container">
-    <!-- Initial Screen -->
+    <!-- Initial Screen (نفس المحتوى السابق) -->
     <div id="initial-screen">
       <header class="app-header">
         <h1>صانع فيديوهات القرآن الكريم</h1>
@@ -37,7 +38,7 @@
       </footer>
     </div>
 
-    <!-- Editor Screen (نفس المحتوى السابق) -->
+    <!-- Editor Screen -->
     <div id="editor-screen" style="display:none;">
       <header class="editor-header">
         <button id="back-to-initial-screen-btn" class="icon-button" title="العودة"><i class="fas fa-arrow-right"></i></button>
@@ -52,9 +53,9 @@
         <div id="video-preview-container">
           <canvas id="video-preview-canvas"></canvas>
           <div id="preview-overlay-content">
-            <h2 id="preview-surah-title"></h2>
-            <div id="preview-ayah-text" class="arabic-text"></div>
-            <div id="preview-translation-text" class="translation-text-overlay"></div>
+            <h2 id="preview-surah-title" class="preview-text-no-shadow"></h2>
+            <div id="preview-ayah-text" class="arabic-text preview-text-no-shadow"></div>
+            <div id="preview-translation-text" class="translation-text-overlay preview-text-no-shadow"></div>
           </div>
         </div>
       </main>
@@ -78,10 +79,11 @@
               <option value="'Amiri Quran', serif">Amiri Quran</option>
               <option value="'Noto Naskh Arabic', serif">Noto Naskh Arabic</option>
               <option value="'Tajawal', sans-serif">Tajawal</option>
+              <option value="'Markazi Text', serif">Markazi Text</option> <!-- الخط الجديد -->
             </select></div>
             <div><label>حجم الخط:</label><input type="range" id="font-size-slider" min="20" max="100" value="48"> <span id="font-size-value">48px</span></div>
             <div><label>لون الخط:</label><input type="color" id="font-color-picker" value="#FFFFFF"></div>
-            <div><label>خلفية الآية (لون):</label><input type="color" id="ayah-bg-color-picker" value="rgba(0,0,0,0.3)"></div>
+            <div><label>خلفية الآية (لون):</label><input type="color" id="ayah-bg-color-picker" value="rgba(0,0,0,0)"></div> <!-- القيمة الافتراضية شفافة -->
             <div><label>تأثير النص:</label><select id="text-effect-select">
                 <option value="none">بدون</option>
                 <option value="fade">تلاشي</option>
@@ -90,6 +92,7 @@
           </div>
         </div>
 
+        <!-- باقي أقسام شريط الأدوات كما هي -->
         <div class="toolbar-section" id="toolbar-background-section">
           <button class="toolbar-tab-button" data-target="background-controls"><i class="fas fa-image"></i><span>الخلفية</span></button>
           <div class="toolbar-controls" id="background-controls" style="display:none;">
