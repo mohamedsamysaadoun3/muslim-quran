@@ -1,112 +1,29 @@
+// ... (بداية الملف كما هي) ...
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed. Starting script execution...");
 
     // --- DOM Element Getters (Safer) ---
-    // It's crucial these are correct and elements exist in HTML
     const getElement = (id) => {
         const el = document.getElementById(id);
+        // هنضيف alert هنا عشان لو عنصر مهم مش موجود، نعرف فورًا
+        if (!el && (id === 'initial-screen' || id === 'editor-screen' || id === 'go-to-editor-btn')) {
+            alert(`Critical element with ID '${id}' NOT FOUND! App might not work correctly.`);
+        }
         if (!el) console.error(`Element with ID '${id}' not found!`);
         return el;
     };
 
+    // ... (باقي تعريفات العناصر كما هي) ...
     const initialScreen = getElement('initial-screen');
     const editorScreen = getElement('editor-screen');
-    const goToEditorBtn = getElement('go-to-editor-btn');
-    const backToInitialScreenBtn = getElement('back-to-initial-screen-btn');
-    
-    const themeToggleInitial = getElement('theme-toggle-initial');
-    const themeToggleEditor = getElement('theme-toggle-editor');
-    const body = document.body; // body will always exist
+    const goToEditorBtn = getElement('go-to-editor-btn'); // مهم نتأكد من ده
 
-    const projectsListEl = getElement('projects-list');
-    const noProjectsMessage = getElement('no-projects-message');
-    const saveProjectBtn = getElement('save-project-btn');
-    const currentProjectTitleEl = getElement('current-project-title');
+    // ... (باقي الدوال كما هي حتى نصل إلى setupEventListeners) ...
 
-    const surahSelect = getElement('surah-select');
-    const ayahStartSelect = getElement('ayah-start-select');
-    const ayahEndSelect = getElement('ayah-end-select');
-    const reciterSelect = getElement('reciter-select');
-    const translationSelect = getElement('translation-select');
-
-    const fontSelect = getElement('font-select');
-    const fontSizeSlider = getElement('font-size-slider');
-    const fontSizeValue = getElement('font-size-value');
-    const fontColorPicker = getElement('font-color-picker');
-    const ayahBgColorPicker = getElement('ayah-bg-color-picker');
-    const textEffectSelect = getElement('text-effect-select');
-
-    const importBackgroundInput = getElement('import-background');
-    const applyAiBgBtn = getElement('apply-ai-bg');
-    const aiBgSuggestionsContainer = getElement('ai-bg-suggestions');
-    
-    const playRangeBtn = getElement('play-range-button');
-    const delayBetweenAyahsInput = getElement('delay-between-ayahs');
-
-    const resolutionSelect = getElement('resolution-select');
-    const transitionSelect = getElement('transition-select');
-    const exportBtn = getElement('export-btn');
-    const exportProgressContainer = getElement('export-progress');
-    const exportProgressBar = getElement('export-progress-bar');
-    const exportProgressText = getElement('export-progress-text');
-
-    const previewCanvas = getElement('video-preview-canvas');
-    let previewCtx = null; // Initialize later after check
-    if (previewCanvas) {
-        previewCtx = previewCanvas.getContext('2d');
-        if (!previewCtx) console.error("Failed to get 2D context from canvas!");
-    }
-    
-    const previewSurahTitleEl = getElement('preview-surah-title');
-    const previewAyahTextEl = getElement('preview-ayah-text');
-    const previewTranslationTextEl = getElement('preview-translation-text');
-
-    const loadingSpinner = getElement('loading-spinner');
-
-    let isExporting = false;
-    let videoBgAnimationId = null;
-
-    // --- State Variables ---
-    let surahsData = [];
-    let recitersData = [];
-    let translationsData = [];
-    let currentProject = createNewProject(); // Initialize with a default project
-    let currentPlayingAudio = null;
-    let capturer = null;
-    let backgroundImage = null; 
-    let isPlayingSequence = false;
-
-    const PEXELS_API_KEY = 'u4eXg16pNHbWDuD16SBiks0vKbV21xHDziyLCHkRyN9z08ruazKntJj7'; 
-    const QURAN_API_BASE = 'https://api.alquran.cloud/v1';
-
-    // --- Core Functions (createNewProject, renderPreviewFrame, etc. as before but with checks) ---
-    // ... (محتوى الدوال السابقة مع إضافة المزيد من التحققات من وجود العناصر قبل استخدامها)
-
-    function createNewProject() {
-        console.log("Creating new project state...");
-        return {
-            id: `project-${Date.now()}`,
-            name: "مشروع جديد",
-            surah: 1,
-            ayahStart: 1,
-            ayahEnd: 1,
-            reciter: 'ar.alafasy',
-            translation: '',
-            font: "'Amiri Quran', serif",
-            fontSize: 48,
-            fontColor: '#FFFFFF', 
-            ayahBgColor: 'rgba(0,0,0,0)', 
-            textEffect: 'none',
-            background: { type: 'color', value: '#000000' },
-            delayBetweenAyahs: 1,
-            resolution: '1920x1080',
-            transition: 'fade',
-            createdAt: new Date().toISOString()
-        };
-    }
-    
     // --- Screen Navigation ---
     function showInitialScreen() {
+        // ... (محتوى الدالة كما هو)
         console.log("Attempting to show initial screen...");
         if (initialScreen) initialScreen.style.display = 'flex'; else console.error("'initialScreen' not found for showInitialScreen");
         if (editorScreen) editorScreen.style.display = 'none'; else console.error("'editorScreen' not found for showInitialScreen");
@@ -120,54 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showEditorScreen() {
+        alert("Inside showEditorScreen function! Attempting to switch screens."); // <-- الـ Alert الجديد هنا
         console.log("Attempting to show editor screen...");
         if (initialScreen) initialScreen.style.display = 'none'; else console.error("'initialScreen' not found for showEditorScreen");
         if (editorScreen) editorScreen.style.display = 'flex'; else console.error("'editorScreen' not found for showEditorScreen");
         
         resizeCanvas(); 
-        renderPreviewFrame(); // Render once screen is visible
+        renderPreviewFrame(); 
         console.log("Editor screen display should be flex, initial none.");
     }
 
-    // --- Theme ---
-    function toggleTheme() {
-        console.log("Toggling theme...");
-        if (!body) { console.error("Body element not found for theme toggle!"); return; }
-        body.classList.toggle('dark-theme');
-        localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
-        console.log("Theme is now:", localStorage.getItem('theme'));
-        renderPreviewFrame(); // Re-render if theme affects canvas
-    }
-
-    function loadTheme() {
-        console.log("Loading theme...");
-        if (!body) { console.error("Body element not found for loading theme!"); return; }
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
-            body.classList.add('dark-theme');
-        } else {
-            body.classList.remove('dark-theme'); // Ensure it's light if not dark
-        }
-        console.log("Loaded theme:", currentTheme || 'light');
-    }
-    
-    // --- Loading Spinner ---
-    function showLoading(message = "جاري التحميل...") {
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'flex';
-            console.log("Loading spinner shown:", message);
-        } else {
-            console.warn("Loading spinner element not found, cannot show.");
-        }
-    }
-    function hideLoading() {
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'none';
-            console.log("Loading spinner hidden.");
-        } else {
-            console.warn("Loading spinner element not found, cannot hide.");
-        }
-    }
 
     // --- Event Listeners Setup (CRUCIAL) ---
     function setupEventListeners() {
@@ -175,15 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (goToEditorBtn) {
             goToEditorBtn.addEventListener('click', () => {
+                alert("Create Video button (goToEditorBtn) CLICKED!"); // <-- الـ Alert الجديد هنا
                 console.log("Create Video button clicked!");
                 currentProject = createNewProject(); 
                 loadProject(currentProject); 
                 showEditorScreen();
             });
         } else {
-            console.error("goToEditorBtn (إنشاء فيديو) not found!");
+            // لو goToEditorBtn مش موجود، هيظهر الـ alert من دالة getElement فوق
+            console.error("goToEditorBtn (إنشاء فيديو) not found! Cannot attach listener.");
         }
 
+        // ... (باقي الـ event listeners كما هي) ...
         if (backToInitialScreenBtn) {
             backToInitialScreenBtn.addEventListener('click', showInitialScreen);
         } else {
@@ -202,12 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("themeToggleEditor not found!");
         }
         
-        // ... (باقي الـ event listeners كما كانت، مع التحقق من وجود العنصر قبل إضافة الـ listener)
-        // مثال:
         if(saveProjectBtn) saveProjectBtn.addEventListener('click', saveCurrentProject);
         if(surahSelect) surahSelect.addEventListener('change', (e) => { currentProject.surah = parseInt(e.target.value); populateAyahSelects(currentProject.surah); });
-        // وهكذا لباقي العناصر...
-
+        
         if(fontSelect) fontSelect.addEventListener('change', (e) => { currentProject.font = e.target.value; updatePreviewStyle(); });
         if(fontSizeSlider) fontSizeSlider.addEventListener('input', (e) => {
             currentProject.fontSize = parseInt(e.target.value);
@@ -238,208 +117,140 @@ document.addEventListener('DOMContentLoaded', () => {
         
 
         window.addEventListener('resize', resizeCanvas); 
-        setupToolbarTabs(); // Make sure this is also safe
+        setupToolbarTabs(); 
         console.log("Event listeners setup complete.");
     }
-    
-    // --- Toolbar Logic (Make sure it's safe) ---
-    function setupToolbarTabs() {
-        const tabButtons = document.querySelectorAll('.toolbar-tab-button');
-        const controlPanels = document.querySelectorAll('.toolbar-controls');
 
-        if (tabButtons.length === 0) {
-            console.warn("No toolbar tab buttons found.");
-            return;
-        }
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.dataset.target;
-                if (!targetId) {
-                    console.warn("Toolbar button has no data-target:", button);
-                    return;
-                }
-                
-                tabButtons.forEach(btn => {
-                    if(btn.parentElement) btn.parentElement.classList.remove('active');
-                });
-                controlPanels.forEach(panel => panel.style.display = 'none');
-
-                if(button.parentElement) button.parentElement.classList.add('active');
-                const targetPanel = getElement(targetId); // Use safe getter
-                if (targetPanel) {
-                    targetPanel.style.display = 'grid'; 
-                } else {
-                    console.warn(`Target panel with ID '${targetId}' not found for toolbar.`);
-                }
-            });
-        });
-        // Activate the first tab by default if its elements exist
-        if (tabButtons[0] && tabButtons[0].parentElement) {
-            const firstTabTargetId = tabButtons[0].dataset.target;
-            if (firstTabTargetId) {
-                const firstPanel = getElement(firstTabTargetId);
-                if(firstPanel) {
-                    tabButtons[0].parentElement.classList.add('active');
-                    firstPanel.style.display = 'grid';
-                }
-            }
-        }
-    }
-
-
+    // --- (باقي دوال الـ init, loadProject, API fetches, rendering, export logic, etc. كما هي من الرد السابق الكامل) ---
+    // ... تأكد من أنك تستخدم النسخة الكاملة والصحيحة من باقي الدوال ...
     // --- Initialization ---
     async function init() {
         console.log("App Init: Starting...");
-        loadTheme(); // Load theme first as it affects base styles
+        loadTheme(); 
 
-        // Ensure crucial UI elements for initial screen are present
         if (!initialScreen || !editorScreen || !goToEditorBtn) {
             console.error("Critical UI elements missing. Aborting full initialization.");
-            alert("حدث خطأ في تحميل واجهة التطبيق. يرجى تحديث الصفحة.");
-            // Try to set up at least theme toggle if it exists
+            // alert("حدث خطأ في تحميل واجهة التطبيق. يرجى تحديث الصفحة."); // الـ alert ده هيظهر من getElement لو فيه مشكلة
             if (themeToggleInitial) themeToggleInitial.addEventListener('click', toggleTheme);
             return;
         }
         
         showLoading("جاري تحميل البيانات الأولية...");
         try {
-            // Fetch data
             await Promise.all([fetchSurahs(), fetchReciters(), fetchTranslations()]);
             console.log("App Init: Data fetched.");
 
-            // Populate selects - ensure elements exist
             if(surahSelect) populateSurahSelect();
             if(reciterSelect) populateReciterSelect();
             if(translationSelect) populateTranslationSelect();
             console.log("App Init: Selects populated.");
 
-            loadProjects(); // Load projects after data is available for name resolution
+            loadProjects(); 
             console.log("App Init: Projects loaded.");
             
-            setupEventListeners(); // Setup all event listeners
+            setupEventListeners(); 
             
-            // Initial UI state for the editor (though it's hidden)
-            loadProject(currentProject); // Load default/new project into editor state
+            loadProject(currentProject); 
             updatePreviewStyle(); 
             resizeCanvas(); 
-            updatePreviewWithFirstAyah(); // This will also call renderPreviewFrame
+            updatePreviewWithFirstAyah(); 
 
-            showInitialScreen(); // Explicitly show initial screen AFTER everything is set up
+            showInitialScreen(); 
             
             console.log("App Init: Initialization sequence complete.");
         } catch (error) {
             console.error("App Init: Initialization failed:", error);
             alert("فشل في تهيئة التطبيق. يرجى تحديث الصفحة أو التحقق من اتصال الإنترنت.");
-            // Fallback: at least ensure theme toggle works if UI is partially broken
             if (themeToggleInitial) themeToggleInitial.addEventListener('click', toggleTheme);
         } finally {
             hideLoading();
         }
     }
     
-    // --- All other functions (loadProject, API fetches, rendering, export etc. as in previous complete script) ---
-    // Make sure to include the complete versions of these functions from the previous good script,
-    // applying the same safety checks for element existence before using them.
-    // For brevity, I am not re-pasting all of them here, but they are crucial.
-    // Example of a check within a function:
-    function populateAyahSelects(surahNumber) {
-        const selectedSurah = surahsData.find(s => s.number == surahNumber);
-        if (!selectedSurah || !ayahStartSelect || !ayahEndSelect) { // Check elements
-            console.warn("Cannot populate Ayah selects: Surah data or select elements missing.");
-            return;
-        }
-        // ... rest of the function
-        const currentStart = parseInt(ayahStartSelect.value) || currentProject.ayahStart;
-        const currentEnd = parseInt(ayahEndSelect.value) || currentProject.ayahEnd;
+    // (Include ALL other helper functions: API fetches, renderPreviewFrame, wrapText, text effects, background handling, audio, export logic etc. from the previous full working script here)
+    // MAKE SURE THEY ARE COMPLETE AND CORRECT.
+    function loadProject(projectData) {
+        console.log("Loading project data into UI...");
+        currentProject = { ...createNewProject(), ...projectData }; 
+        if(currentProjectTitleEl) currentProjectTitleEl.textContent = currentProject.name;
 
-        ayahStartSelect.innerHTML = '';
-        // ayahEndSelect.innerHTML = ''; // Will be repopulated by updateAyahEndOptions
-
-        for (let i = 1; i <= selectedSurah.numberOfAyahs; i++) {
-            const optionStart = document.createElement('option');
-            optionStart.value = i;
-            optionStart.textContent = i;
-            ayahStartSelect.appendChild(optionStart);
-        }
+        if(surahSelect) surahSelect.value = currentProject.surah;
+        if(reciterSelect) reciterSelect.value = currentProject.reciter;
+        if(translationSelect) translationSelect.value = currentProject.translation || "";
+        if(fontSelect) fontSelect.value = currentProject.font;
+        if(fontSizeSlider) fontSizeSlider.value = currentProject.fontSize;
+        if(fontSizeValue) fontSizeValue.textContent = `${currentProject.fontSize}px`;
+        if(fontColorPicker) fontColorPicker.value = currentProject.fontColor;
+        if(ayahBgColorPicker) ayahBgColorPicker.value = currentProject.ayahBgColor;
+        if(textEffectSelect) textEffectSelect.value = currentProject.textEffect;
+        if(delayBetweenAyahsInput) delayBetweenAyahsInput.value = currentProject.delayBetweenAyahs;
+        if(resolutionSelect) resolutionSelect.value = currentProject.resolution;
+        if(transitionSelect) transitionSelect.value = currentProject.transition;
         
-        ayahStartSelect.value = Math.min(currentStart, selectedSurah.numberOfAyahs) || 1;
-        updateAyahEndOptions(); 
-        if(ayahEndSelect.value && parseInt(ayahEndSelect.value) < parseInt(ayahStartSelect.value)) {
-            ayahEndSelect.value = ayahStartSelect.value;
-        }
-        currentProject.ayahStart = parseInt(ayahStartSelect.value);
-        currentProject.ayahEnd = parseInt(ayahEndSelect.value || ayahStartSelect.value); // Ensure ayahEnd has a value
-
-        updatePreviewWithFirstAyah(); 
-    }
-
-    function updateAyahEndOptions() {
-        if(!ayahStartSelect || !ayahEndSelect || !surahSelect) return; // Safety check
-        const startAyah = parseInt(ayahStartSelect.value);
-        const selectedSurah = surahsData.find(s => s.number == surahSelect.value);
-
-        if (!selectedSurah || isNaN(startAyah)) {
-            if(ayahEndSelect) ayahEndSelect.innerHTML = ''; // Clear if invalid state
-            return;
-        }
+        if(surahSelect) surahSelect.dispatchEvent(new Event('change')); // To trigger populateAyahSelects
         
-        const currentEndVal = parseInt(ayahEndSelect.value) || currentProject.ayahEnd;
-        
-        ayahEndSelect.innerHTML = ''; 
-        for (let i = startAyah; i <= selectedSurah.numberOfAyahs; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            ayahEndSelect.appendChild(option);
-        }
-        
-        if (currentEndVal >= startAyah && currentEndVal <= selectedSurah.numberOfAyahs) {
-            ayahEndSelect.value = currentEndVal;
-        } else {
-            ayahEndSelect.value = startAyah; 
-        }
-        currentProject.ayahEnd = parseInt(ayahEndSelect.value);
-        // updatePreviewWithFirstAyah(); // Avoid calling this again here to prevent loop if called from populateAyahSelects
-    }
-
-    async function updatePreviewWithFirstAyah() {
-        if(!surahSelect || !ayahStartSelect || !previewSurahTitleEl || !previewAyahTextEl) return;
-
-        const surah = parseInt(surahSelect.value);
-        const ayahStart = parseInt(ayahStartSelect.value);
-        const translationId = translationSelect ? translationSelect.value : "";
-
-        if (surah && ayahStart) {
-            const ayahData = await fetchAyahData(surah, ayahStart, null, translationId);
-            if (ayahData) {
-                previewSurahTitleEl.textContent = ayahData.surahName;
-                applyTextEffect(previewAyahTextEl, ayahData.text, currentProject.textEffect, () => {});
-                if(previewTranslationTextEl) previewTranslationTextEl.textContent = ayahData.translationText || "";
-                renderPreviewFrame(ayahData.text, ayahData.surahName, ayahData.translationText);
+        // Delay might still be needed if populateAyahSelects is async or has internal delays
+        setTimeout(() => {
+            if (ayahStartSelect && ayahEndSelect) { 
+                ayahStartSelect.value = currentProject.ayahStart;
+                // updateAyahEndOptions will be called by the 'change' event on surahSelect, then ayahStartSelect
+                // We might need to ensure it correctly sets ayahEndSelect.value here if not triggered.
+                if (ayahEndSelect.querySelector(`option[value="${currentProject.ayahEnd}"]`)) {
+                     ayahEndSelect.value = currentProject.ayahEnd;
+                } else {
+                    // If the option doesn't exist yet (e.g. populateAyahSelects hasn't fully run and set end options)
+                    // then updateAyahEndOptions should handle setting it correctly based on start.
+                    console.warn(`Ayah end option ${currentProject.ayahEnd} not immediately available, will be set by updateAyahEndOptions.`);
+                }
             }
-        } else {
-             renderPreviewFrame(); 
-        }
+
+            if (currentProject.background) {
+                if (currentProject.background.type === 'image' && currentProject.background.value) {
+                    const img = new Image();
+                    img.onload = () => { backgroundImage = img; renderPreviewFrame(); };
+                    img.onerror = () => { console.warn("Could not load project background image from stored data."); backgroundImage = null; currentProject.background = {type: 'color', value: '#000000'}; renderPreviewFrame(); }
+                    img.src = currentProject.background.value; 
+                } else if (currentProject.background.type === 'color') {
+                    backgroundImage = null; renderPreviewFrame(); 
+                }
+            }
+            updatePreviewStyle(); // Apply styles like font size for overlay
+            renderPreviewFrame(); // Final render
+        }, 300); // Slightly increased delay to ensure selects are populated
     }
 
-    // --- (Include ALL other helper functions: API fetches, renderPreviewFrame, wrapText, text effects, background handling, audio, export logic etc. from the previous full working script here)
-    // --- MAKE SURE THEY ARE COMPLETE AND CORRECT. The script was truncated for this response focusing on fixes.
+    // Include all other functions like populateSurahSelect, populateAyahSelects, API fetches, rendering logic, etc.
+    // Ensure they have safety checks for element existence if they manipulate DOM elements directly.
+    // For example:
+    function populateSurahSelect() {
+        if (!surahSelect) return; // Safety first
+        surahSelect.innerHTML = '';
+        surahsData.forEach(surah => {
+            const option = document.createElement('option');
+            option.value = surah.number;
+            option.textContent = `${surah.number}. ${surah.name} (${surah.englishName})`;
+            surahSelect.appendChild(option);
+        });
+        surahSelect.value = currentProject.surah; 
+        // populateAyahSelects(currentProject.surah); // This will be triggered by surahSelect.dispatchEvent in loadProject
+    }
 
-    // Re-paste the complete, previously working functions like:
-    // fetchSurahs, fetchReciters, fetchTranslations, fetchAyahData (ensure safe)
-    // loadProject, saveCurrentProject, loadProjects, deleteProject (ensure safe)
-    // resizeCanvas, updatePreviewStyle, renderPreviewFrame (ensure safe and use previewCtx safely)
-    // wrapText, applyTextEffect (ensure safe)
-    // handleBackgroundImport, fetchAiBackgrounds (ensure safe)
-    // playAudioSequence (ensure safe)
-    // exportVideo, renderAyahForExport, updateExportProgress (ensure safe)
+    // ... (Paste the REST of your functions here, ensuring they are complete from the last known good state)
+    // fetchSurahs, fetchReciters, fetchTranslations, fetchAyahData
+    // saveCurrentProject, loadProjects, deleteProject
+    // populateAyahSelects, updateAyahEndOptions, updatePreviewWithFirstAyah
+    // resizeCanvas, updatePreviewStyle, renderPreviewFrame (the full one), wrapText
+    // applyTextEffect
+    // handleBackgroundImport, fetchAiBackgrounds
+    // playAudioSequence
+    // exportVideo, renderAyahForExport, updateExportProgress
+    // setupToolbarTabs
 
 
     // --- Start the application ---
-    if (document.readyState === 'loading') { // 경우에 따라 DOMContentLoaded가 이미 발생했을 수 있습니다.
+    if (document.readyState === 'loading') { 
         document.addEventListener('DOMContentLoaded', init);
     } else {
-        init(); // DOM이 이미 로드된 경우 즉시 실행
+        init(); 
     }
 });
